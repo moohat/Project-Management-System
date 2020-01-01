@@ -1,0 +1,136 @@
+<% include ../partials/header %>
+<div class="container">
+  <h1>Projects</h1>
+  
+      <hr>
+      <h2>Filters</h2>
+      <br />
+      <form action="" method="GET">
+        <!--       id        -->
+        <div class="container col-sm-10">
+            <div class="form-group row">         
+              <label for="id" class="col-sm-2 col-form-label"><input type="checkbox">ID</label>
+              <div class="col-sm-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="id"
+                  placeholder="id"
+                  name="id"
+                />
+              </div>
+            </div>
+            <!--       name        -->
+            <div class="form-group row">
+              <label for="name" class="col-sm-2 col-form-label"><input type="checkbox">Name</label>
+              <div class="col-sm-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  placeholder="name"
+                  name="name"
+                />
+              </div>
+            </div>
+            <!--       member        -->
+            <div class="form-group row">
+              <label for="boolean" class="col-sm-2 col-form-label"><input type="checkbox">Member</label>
+              <div class="col-sm-6">
+                <select id="boolean" class="form-control" value="Choose the boolean ....">
+                  <option>Choose the member ...</option>
+                  <option>true</option>
+                  <option>false</option>
+              </select>
+              </div>
+            </div>
+    
+            <div class="form-group row">
+                <div class="col-sm-10">
+                  <button type="submit" name="button" class="btn btn-primary">Search</button>
+                  <a href="/projects" class="btn btn-warning">Reset</a>
+                </div>
+            </div>
+        </div>
+      </form>
+      <h2><i class="fas fa-columns"></i> Options</h2>
+      <form action="" method="POST">
+          <div class="form-group row">
+              <div class="col-sm-2">Column</div>
+              <div class="col-sm-3">
+                  <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="oprojectid" value="true"/>
+                      <label class="form-check-label" for="projectid">
+                          ID
+                      </label>
+                  </div>
+                  <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="oname" value="true"/>
+                      <label class="form-check-label" for="name">
+                          Name
+                      </label>
+                  </div>
+                  <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="omember" value="true"/>
+                      <label class="form-check-label" for="member">
+                          Members
+                      </label>
+                  </div>
+              </div>
+          </div>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> Apply</button>
+      </form>
+      <br />
+
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Action</th>
+                <th scope="col">Handle</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+              </tr>
+              <tr>
+                <th scope="row">3</th>
+                <td>Larry</td>
+                <td>the Bird</td>
+                <td>@twitter</td>
+              </tr>
+            </tbody>
+          </table>
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+            <li class="page-item">
+              <a class="page-link" href="#">Previous</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+          </ul>
+        </nav>
+        <br />
+
+        <div class="form-group row">
+          <a href="projects/add"
+            ><button type="button" class="btn btn-primary">add</button></a
+          >
+        </div>
+    </div>
+
+    <% include ../partials/footer %>
+
