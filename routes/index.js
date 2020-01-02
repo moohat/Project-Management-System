@@ -16,13 +16,14 @@ module.exports = function (pool){
   
   /* GET login page. */
   router.post('/login', function(req, res, next) {
-    let {
-      email,
-      password
-    } = req.body;
+    // let { email,  password
+    // } = req.body;
+    let email= req.body.email;
+    let password = req.body.password;
     pool.query(
-      `SELECT * FROM users WHERE email = '${email}'`,
+      `SELECT * FROM users WHERE email = '${email}' AND password = '${password}'`,
       (err, data) => {
+        // if(err) return res.send(err);
         if (data.rows.length > 0) {
           if (data.rows[0].email == email && data.rows[0].password == password) {
             // data.rows[0].password = null;

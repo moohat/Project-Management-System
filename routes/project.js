@@ -7,15 +7,27 @@ const helpers = require("../helpers/util")
 
 module.exports = function (pool) {
 
-    router.get("/", (req, res, next) =>{
-        sql = 'SELECT * FROM projects';
-        pool.query(sql, (err, response) =>{
-            if(err) return res.send(err);
-            res.render('projects/listProject',{
-                data: response.rows,
-                query: req.query,
+    router.get("/", (req, res, next) => {
+        const page = req.query.page || 1;
+        const limit = 5;
+        const offset = (page - 1) * limit;
+        pool.query(`SELECT COUNT(*) AS total FROM projects  `, (err, response) => {
+            if (err) return res.send(err);
+            const pages = Math.ceil(response.rows[0].total / limit);
 
-            })
+
+            sql = `SELECT * FROM projects LIMIT ${limit} OFFSET ${offset}`;
+            pool.query(sql, (err, response) => {
+                if (err) return res.send(err);
+                res.render('projects/listProject', {
+                    data: response.rows,
+                    page,
+                    query: req.query,
+                    pages
+                    
+
+                });
+            });
         });
     });
     /* GET home page. */
@@ -73,7 +85,7 @@ module.exports = function (pool) {
     //     });
     // });
 
-   
+
     router.post('/', (req, res) => {
         let sql = `UPDATE users SET projectsoptions = '${JSON.stringify(req.body)}' WHERE userid = ${req.session.user.userid}`
         pool.query(sql, (err) => {
@@ -128,8 +140,8 @@ module.exports = function (pool) {
         });
     });
 
-   
-    router.post('/add',  (req, res, next) => {
+
+    router.post('/add', (req, res, next) => {
         let sqlAddName = `INSERT INTO projects(name) VALUES('${req.body.projectname}')`;
         pool.query(sqlAddName, (err, result) => {
             let sqlAddNext = `SELECT MAX(projectid) total FROM projects`;
