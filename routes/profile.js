@@ -8,7 +8,7 @@ module.exports = function (pool){
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('profile/viewProfile',{
-         user: req.session.user
+        //  user: req.session.user
     });
   });
 

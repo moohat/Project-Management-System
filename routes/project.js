@@ -6,62 +6,74 @@ const helpers = require("../helpers/util")
 
 
 module.exports = function (pool) {
-    /* GET home page. */
-    router.get('/', (req, res, next) => {
-        const page = req.query.page || 1;
-        const limit = 3;
-        const offset = (page - 1) * limit;
-        const url = reql.url == '/' ? '/?page=1' : req.url;
-        let result = [];
-        let filterData = false;
-        if (req.query.check_id && req.query.id) {
-            result.push(`projects.projectid = ${req.query.id}`);
-            filterData = true;
-        }
-        if (req.query.check_name && req.query.name) {
-            result.push(`projects.name ILIKE '%${req.query.name.toLowerCase()}%`);
-            filterData = true;
-        }
-        if (req.query.check_member && req.query.member) {
-            result.push(`members.userid = '${req.query.member}'`);
-            filterData = true;
-            console.log(req.query);
-        }
 
-        let sql = `SELECT COUNT(id) AS total FROM (SELECT DISTINCT projects.projectid AS id FROM projects LEFT JOIN members ON projects.projectid = members.projectid `;
-        if (result.length > 0) {
-            sql += ` WHERE ${result.join(' AND ')}`
-        }
-        sql += `) AS projectmember`;
+    router.get("/", (req, res, next) =>{
+        sql = 'SELECT * FROM projects';
+        pool.query(sql, (err, response) =>{
+            if(err) return res.send(err);
+            res.render('projects/listProject',{
+                data: response.rows,
+                query: req.query,
 
-        //todo: PAGINATION
-        pool.query(sql, (err, count) => {
-            console.log('page: ==>' + req.query.page);           
-            const total = count.rows[0].total;
-            const pages = Math.ceil(total / limit);
-
-            let sql = `SELECT DISTINCT projects.projectid FROM projects LEFT JOIN members ON projects.projectid = members.projectid `;
-            if (filterData) {
-                sql += ` WHERE ${result.join(' AND ')}`
-            }
-            sql += ` ORDER BY projectid LIMIT ${limit} OFFSET ${offset}`;
-
-            pool.query(sql, (err, row) => {
-                res.render('projects/listProject', {
-                    model: row.rows,
-                    page,
-                    pages,
-                    query: req.query,
-                    url,
-                    user: req.session.user
-
-
-                });
-            });
+            })
         });
     });
+    /* GET home page. */
+    // router.get('/', (req, res, next) => {     
+    //     let result = [];
+    //     let filterData = false;
 
+    //     if (req.query.check_id && req.query.id) {
+    //         result.push(`projects.projectid = ${req.query.id}`);
+    //         filterData = true;
+    //     }
+    //     if (req.query.check_name && req.query.name) {
+    //         result.push(`projects.name ILIKE '%${req.query.name.toLowerCase()}%`);
+    //         filterData = true;
+    //     }
+    //     if (req.query.check_member && req.query.member) {
+    //         result.push(`members.userid = '${req.query.member}'`);
+    //         filterData = true;
+    //         console.log(req.query);
+    //     }
 
+    //     let sql = `SELECT COUNT(*) AS total FROM projects `;
+    //     if (filterData) {
+    //         sql += ` WHERE ${result.join(' AND ')}`
+    //     }
+    // //     // sql += `) AS projectmember`;
+
+    // //     //todo: PAGINATION
+    //     pool.query(sql, (err, count) => {
+    //         const page = req.query.page || 1;
+    //         const limit = 3;
+    //         const offset = (page - 1) * limit;
+    //         const url = req.url == '/' ? '/?page=1' : req.url;
+
+    //         // console.log('page: ==>' + req.query.page);           
+    //         const total = count.rows[0].total;
+    //         const pages = Math.ceil(total / limit);
+
+    //         let sql = `SELECT FROM projects`;
+    //         if (filterData) {
+    //             sql += ` WHERE ${result.join(' AND ')}`
+    //         }
+    //         sql += ` ORDER BY projectid LIMIT ${limit} OFFSET ${offset}`;
+
+    //         pool.query(sql, (err, row) => {
+    //             res.render('projects/listProject', {
+    //                 data: row.rows,
+    //                 page,
+    //                 pages,
+    //                 query: req.query,
+    //                 url,
+    //                 user: req.session.user
+    //             });
+    //         });
+    //     });
+    // });
+
+   
     router.post('/', (req, res) => {
         let sql = `UPDATE users SET projectsoptions = '${JSON.stringify(req.body)}' WHERE userid = ${req.session.user.userid}`
         pool.query(sql, (err) => {
@@ -116,36 +128,8 @@ module.exports = function (pool) {
         });
     });
 
-    // router.post("/add", (req, res, next) => {
-    //     let sqlAddName = `INSERT INTO projects(name) VALUES('${req.body.projectName}')`;
-    //     pool.query(sqlAddName, (err, result) => {
-    //         let sqlAddNext = `SELECT MAX(projectid) total FROM projects`;
-    //         pool.query(sqlAddNext, (err, result) => {
-    //             if (err) throw err;
-    //             let params = [];
-    //             const projectid = result.rows[0].total;
-    //             if (typeof req.body.members == 'string') {
-    //                 params.push(`${req.body.members}, ${projectid}`);
-    //             } else {
-    //                 for (let i = 0; i < req.body.members.length; i++) {
-    //                     params.push(`(${req.body.members[i]}, ${projectid})`);
-
-    //                 }
-    //             }
-    //             let sqlAddMembers = `INSERT INTO members(userid,projectid ) VALUES ${params.join(', ')}`;
-    //             pool.query(sqlAddMembers, (err) => {
-    //                 if (err) {
-    //                     return res.send(err)
-    //                 };
-    //                 res.redirect('/projects')
-    //             });
-    //         });
-    //     });
-
-    // });
-
-
-    router.post('/add', helpers.isLoggedIn, (req, res, next) => {
+   
+    router.post('/add',  (req, res, next) => {
         let sqlAddName = `INSERT INTO projects(name) VALUES('${req.body.projectname}')`;
         pool.query(sqlAddName, (err, result) => {
             let sqlAddNext = `SELECT MAX(projectid) total FROM projects`;
