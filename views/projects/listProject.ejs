@@ -98,9 +98,9 @@
             
               <% for(const item of data)  { %>
                 <tr>
-                  <td> <%= item.projectid %></td>
+                  <td><a href="/projects/overview/<%= item.projectid %>" class="btn btn-success"> <%= item.projectid %></a></td>
                   <td> <%= item.name %></td>
-                  <td></td>
+                  <td> <%= item.name %></td>
                   <td>
                     <a class="btn btn-success edit" href="projects/edit/<%= item.projectid %>">Edit</a>                       
     <a class="btn btn-danger delete" onclick="return confirm('Are you sure you want to delete this item?');" href="delete/<%= item.projectid %>">Delete</a>    
@@ -128,6 +128,10 @@
                          href="/projects?page=<%= parseInt(page) + 1%>">Next</a></li>
              </ul>
          </nav>
+
+
+
+         
       
         <br />
 

@@ -26,7 +26,7 @@ module.exports = function (pool) {
     //                 page,
     //                 query: req.query,
     //                 pages
-                    
+
 
     //             });
     //         });
@@ -49,27 +49,30 @@ module.exports = function (pool) {
 
         //Pagination
         const page = req.query.page || 1;
+        
         let url = req.url == '/' ? '/?page=1' : req.url;
         const limit = 5;
         const offset = (page - 1) * limit;
         let sql = `SELECT COUNT(*) AS total FROM projects  `;
         //check params filter
-        
-        // if (params.length > 0) {
-        //     sql += `WHERE ${params.join(' AND ')}`
-        // }
+
+        if (params.length > 0) {
+            sql += `WHERE ${params.join(' AND ')}`
+        }
 
         pool.query(sql, (err, response) => {
             if (err) return res.send(err);
             const pages = Math.ceil(response.rows[0].total / limit);
+            console.log('HALAMAN', response.rows);
             sql = `SELECT * FROM projects `;
+
             //check params filter
             if (params.length > 0) {
                 sql += `WHERE ${params.join(' AND ')}`
             }
             sql += ` LIMIT ${limit} OFFSET ${offset}`;
             console.log(sql);
-            
+
             pool.query(sql, (err, response) => {
                 if (err) return res.send(err);
                 res.render('projects/listProject', {
@@ -84,7 +87,7 @@ module.exports = function (pool) {
             });
         });
     });
-   
+
 
     router.post('/', (req, res) => {
         let sql = `UPDATE users SET projectsoptions = '${JSON.stringify(req.body)}' WHERE userid = ${req.session.user.userid}`
@@ -144,9 +147,42 @@ module.exports = function (pool) {
         });
     });
 
-    router.get("/edit/:id", (req, res) =>{
+    router.get("/edit/:id", (req, res) => {
 
     });
+
+    router.get("/overview/:projectid", (req, res, next) => {
+        res.render("projects/overview/listOverview");
+    });
+
+
+
+    // router.get("/members/:projectid", (req, res, next) =>{
+    router.get("/overview/", (req, res, next) => {
+        res.render("projects/overview/listOverview");
+    });
+
+    router.get("/activity/", (req, res, next) => {
+        res.render("projects/overview/activity/listActivity")
+    });
+
+    // router.get("/members/:projectid", (req, res, next) =>{
+    router.get("/members/", (req, res, next) => {
+        res.render("projects/overview/members/listMember");
+    });
+
+    //add members
+    router.get("/members/add", (req, res, next) => {
+        res.render("projects/overview/members/addMember");
+    });
+
+
+
+    // router.get("/members/:projectid", (req, res, next) =>{
+    router.get("/issues/", (req, res, next) => {
+        res.render("projects/overview/issues/listIssues");
+    });
+
 
 
     return router;

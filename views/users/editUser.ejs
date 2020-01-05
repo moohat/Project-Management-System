@@ -2,28 +2,27 @@
 
 <div class="container">
     <h2>Add User</h2>
-    <br />
     <form action="" method="POST">
         
         <!--       First Name        -->
         <div class="form-group row">
           <label for="string" class="col-sm-2 col-form-label">First Name</label>
           <div class="col-sm-6">
-              <input type="text" class="form-control" id="firstname" placeholder="Input nama Project" name="firstname">
+              <input type="text" class="form-control" id="firstname" value="<%= user.firstname %>" name="firstname">
           </div>
         </div>
            <!--       Last Name        -->
            <div class="form-group row">
             <label for="string" class="col-sm-2 col-form-label">Last Name</label>
             <div class="col-sm-6">
-                <input type="text" class="form-control" id="lastname" placeholder="Input nama Project" name="lastname">
+                <input type="text" class="form-control" id="lastname" value="<%= user.lastname %>" name="lastname">
             </div>
           </div> 
           <!--       Last Name        -->
           <div class="form-group row">
            <label for="string" class="col-sm-2 col-form-label">Email</label>
            <div class="col-sm-6">
-               <input type="email" class="form-control" id="email" placeholder="Input nama Project" name="email">
+               <input type="email" class="form-control" id="email" value="<%= user.email %>" name="email">
            </div>
          </div>
 
@@ -31,52 +30,43 @@
            <div class="form-group row">
             <label for="string" class="col-sm-2 col-form-label">Password</label>
             <div class="col-sm-6">
-                <input type="password" class="form-control" id="password" placeholder="Input nama Project" name="password">
+                <input type="password" class="form-control" id="password" value="<%= user.password %>" name="password">
             </div>
           </div>
-        <!--       Position        -->
+
+        <!-- POSITION -->
         <div class="form-group row">
-            <label for="string" class="col-sm-2 col-form-label">Position</label>
-            <div class="col-sm-6">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="role" id="role" value="Manager" checked>
-                  <label class="form-check-label" for="manager">
-                    Manager
-                  </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="role" id="role" value="Software Developer" checked>
-                    <label class="form-check-label" for="softwareDeveloper">
-                      Software Developer
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="role" id="role" value="Quality Assurance" checked>
-                    <label class="form-check-label" for="qualityAssurance">
-                      Quality Assurance
-                    </label>
-                  </div>
-            </div>            
+          <label class="col-sm-2">Position</label>
+          <!-- POSITION CHOICES -->
+          <div class="form-group col-sm-3">
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" id="manager" name="position" value="Manager" <%= user.position == "Manager" ? "checked": "" %>>
+              <label class="custom-control-label" for="manager" >Manager</label>
+            </div>
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" id="softdev" name="position" value="Software Developer" <%= user.position == "Software Developer" ? "checked": "" %>>
+              <label class="custom-control-label" for="softdev">Software Developer</label>
+            </div>
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" id="qa" name="position" value="Quality Assurance" <%= user.position == "Quality Assurance" ? "checked": "" %>>
+              <label class="custom-control-label" for="qa">Quality Assurance</label>
+            </div>
+          </div>
         </div>
 
-         <!--       Type        -->
+         <!--       Job Type        -->
          <div class="form-group row">
-            <label for="string" class="col-sm-2 col-form-label">Type Job</label>
-            <div class="col-sm-6">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="typejob" id="fulltime" value="option1" checked>
-                  <label class="form-check-label" for="fulltime">
-                    Full Time
-                  </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="typejob" id="parttime" value="option1" checked>
-                    <label class="form-check-label" for="parttime">
-                      Part Time
-                    </label>
-                  </div>
-              
-            </div>            
+          <label class="col-sm-2">Job Type</label>
+          <div class="form-group col-sm-3">
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" id="jobtype1" name="jobtype" value="Full Time" <%= user.jobtype == "Full Time" ? "checked": "" %>>
+              <label class="custom-control-label" for="jobtype1">Full Time</label>
+            </div>
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" id="jobtype2" name="jobtype" value="Part Time" <%= user.jobtype == "Part Time" ? "checked": "" %>>
+              <label class="custom-control-label" for="jobtype2">Part Time</label>
+            </div>
+          </div>
         </div>
 
       

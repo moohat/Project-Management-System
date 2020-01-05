@@ -1,15 +1,17 @@
-<% include ../partials/header%>
+<%- include ../../../../views/partials/header %>
+<% include ../../overview/overview_partials/header %>
 
 <div class="container">
-    <h2>Add User</h2>
+  <br />
+    <h2>Add Member</h2>
     <br />
     <form action="" method="POST">        
          <!--       Members        -->
          <div class="form-group row">
-            <label for="boolean" class="col-sm-1 col-form-label">Boolean</label>
+            <label class="col-sm-1 col-form-label">Members</label>
             <div class="col-sm-6">
-                <select class="custom-select d-block w-100" id="boolean" name="boolean">
-                    <option>choose the boolean...</option>
+                <select class="custom-select d-block w-100" id="userid" name="userid">
+                    <option>choose the Members...</option>
                     <option>true</option>
                     <option>false</option>
                   </select>
@@ -39,35 +41,15 @@
                     </label>
                   </div>
             </div>            
-        </div>
-
-         <!--       Type        -->
-         <div class="form-group row">
-            <label for="string" class="col-sm-2 col-form-label">Type Job</label>
-            <div class="col-sm-6">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="typejob" id="fulltime" value="option1" checked>
-                  <label class="form-check-label" for="fulltime">
-                    Full Time
-                  </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="typejob" id="parttime" value="option1" checked>
-                    <label class="form-check-label" for="parttime">
-                      Part Time
-                    </label>
-                  </div>
-              
-            </div>            
-        </div>
-
+        </div>       
       
             <div class="form-group row">   
                 <div class="col-sm-10">    
                 <button type="submit" class="btn btn-default btn-success">Save</button>
-                <a href="/users" class="btn btn-warning">Cancel</a>
+                <a href="/projects/members" class="btn btn-warning">Cancel</a>
             </div>     
            </div> 
 
     
-<% include ../partials/footer %>
+           <%- include ../../../../views/partials/footer %>
+           <% include ../../overview/overview_partials/footer %>
