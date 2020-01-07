@@ -111,7 +111,7 @@ router.get('/add', function(req, res, next) {
     const userid = req.params.userid;
     // let sql = `DELETE FROM members WHERE (userid = $1); DELETE FROM users WHERE (userid = $1)`;
     // let sql = `DELETE members, users FROM members INNER JOIN users WHERE members.userid = users.userid AND users.userid = '${userid}'`;
-    let sql = `DELETE FROM members WHERE userid = ${req.params.userid}; DELETE FROM users WHERE userid = ${req.params.userid}`;
+    let sql = `DELETE FROM members WHERE userid = ${userid}; DELETE FROM users WHERE userid = ${userid}`;
     pool.query(sql, (err) =>{
       if (err) {
         return console.error(err.message);

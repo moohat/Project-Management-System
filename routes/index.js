@@ -28,6 +28,8 @@ module.exports = function (pool){
           if (data.rows[0].email == email && data.rows[0].password == password) {
             // data.rows[0].password = null;
             req.session.user = data.rows[0];
+            console.log(req.session.user);
+            
             res.redirect("/projects");
           }
         } else {

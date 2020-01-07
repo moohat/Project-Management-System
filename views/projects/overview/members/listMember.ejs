@@ -3,7 +3,7 @@
 
 <div class="container">
     <br />
-  <h1>Members</h1>
+<h1 class="h2"> Members on: #<%= data[0].projectid %> <%= data[0].name %> </h1>
   
       <hr>
       <h2>Filters</h2>
@@ -89,31 +89,25 @@
         <table class="table table-striped">
             <thead>
               <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Position</th>
-                <th scope="col">Action</th>
+                <th scope="col"> User ID</th>
+                <th scope="col"> Name</th>
+                <th scope="col"> Position</th>
+                <th scope="col"> Action</th>
               </tr>
             </thead>
             <tbody>
+              <% data.forEach((item, index) =>{ %>
                 <tr>
-                  <th scope="row">1</th>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
+                 <td><%= item.userid %></td>
+                 <td><%= item.firstname +" "+ item.lastname %></td>
+                 <td><%= item.role %></td>
+                 <td>
+                <a class="btn btn-success edit" href="/projects/members/<%= item.projectid %>/<%=item.userid%>/edit">Edit</a>                       
+<a class="btn btn-danger delete" onclick="return confirm('Are you sure you want to delete this item?');" href="/projects/members/<%= item.projectid %>/<%=item.userid%>/delete">Delete</a>    
+              </td>
                 </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>Jacob</td>
-                  <td>Thornton</td>
-                  <td>@fat</td>
-                </tr>
-                <tr>
-                  <th scope="row">3</th>
-                  <td>Larry</td>
-                  <td>the Bird</td>
-                  <td>@twitter</td>
-                </tr>
+
+              <% }) %>
               </tbody>
           </table>
 
@@ -136,7 +130,7 @@
         <br />
 
         <div class="form-group row">
-          <a href="/projects/members/add"
+          <a href="/projects/members/<%= data[0].projectid%>/add"
             ><button type="button" class="btn btn-primary">add</button></a
           >
         </div>

@@ -1,0 +1,45 @@
+<% include ../../../../views/partials/header %>
+
+<div class="container">
+    <br>
+    <div class="card">
+      <h5 class="card-header">Edit member on Project: #<%=projectid%> </h5>
+      <div class="card-body">
+        <!-- EDIT FORM -->
+        <form action="" method="post">
+          <!-- MEMBER DROPDOWN -->
+          <div class="form-group row">
+            <div class="col-sm-3 col-from-label">
+              <label for="">Member</label>
+            </div>
+            <div class="col-sm col-form-label">
+              <input type="text" class="form-control" name="projectname" id="projectNameId"
+                value="<%=data.firstname+" "+ data.lastname%>" readonly />
+            </div>
+          </div>
+  
+          <!-- POSITION -->
+          <div class="form-group row">
+            <label class="col-sm-3">Position</label>
+            <!-- POSITION CHOICES -->
+            <div class="form-group col-sm">
+              <div class="custom-control custom-radio">
+                <input type="radio" class="custom-control-input" id="manager" name="position" value="Manager"  <%= data.role == 'Manager' ? ' checked' : '' %> required >
+                <label class="custom-control-label" for="manager">Manager</label>
+              </div>
+              <div class="custom-control custom-radio">
+                <input type="radio" class="custom-control-input" id="softdev" name="position" value="Software Developer">
+                <label class="custom-control-label" for="softdev">Software Developer</label>
+              </div>
+              <div class="custom-control custom-radio">
+                <input type="radio" class="custom-control-input" id="qa" name="position" value="Quality Assurance">
+                <label class="custom-control-label" for="qa">Quality Assurance</label>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <% include ../../../../views/partials/footer %>

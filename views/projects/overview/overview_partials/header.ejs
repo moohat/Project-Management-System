@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 
 <head>
@@ -15,19 +16,20 @@
 </head>
 
 <body>
+  
 
   <div class="d-flex" id="wrapper">
     <!-- Sidebar -->
     <div class="bg-light border-right" id="sidebar-wrapper">
       <div class="sidebar-heading"> Project Menu </div>
       <div class="list-group list-group-flush">
-        <a href="/projects/overview/"
+        <a href="/projects/overview/<%= data[0].projectid %>"
           class="list-group-item list-group-item-action bg-light"><i class="fa fa-list-alt"></i> Overview</a>
-        <a href="/projects/activity/"
+        <a href="/projects/activity/<%= data[0].projectid %>"
           class="list-group-item list-group-item-action bg-light"><i class="fa fa-calendar"></i> Activity</a>
-        <a href="/projects/members/"
+        <a href="/projects/members/<%= data[0].projectid %>"
           class="list-group-item list-group-item-action bg-light"><i class="fa fa-users"></i> Members</a>
-        <a href="/projects/issues/"
+        <a href="/projects/issues/<%= data[0].projectid %>"
           class="list-group-item list-group-item-action bg-light"><i class="fa fa-clipboard"></i> Issues</a>
       </div>
     </div>

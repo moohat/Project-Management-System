@@ -11,9 +11,11 @@
             <label class="col-sm-1 col-form-label">Members</label>
             <div class="col-sm-6">
                 <select class="custom-select d-block w-100" id="userid" name="userid">
-                    <option>choose the Members...</option>
-                    <option>true</option>
-                    <option>false</option>
+                  <% data.forEach((item, index) =>{ %>
+                      <option value="<%= item.userid %>"><%= item.fullname %></option>
+                      
+                 <% }) %>
+                   
                   </select>
             </div>
         </div>    
@@ -23,19 +25,19 @@
             <label for="string" class="col-sm-2 col-form-label">Position</label>
             <div class="col-sm-6">
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="role" id="role" value="Manager" checked>
+                  <input class="form-check-input" type="radio" name="position" id="role" value="Manager" checked>
                   <label class="form-check-label" for="manager">
                     Manager
                   </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="role" id="role" value="Software Developer" checked>
+                    <input class="form-check-input" type="radio" name="position" id="role" value="Software Developer" checked>
                     <label class="form-check-label" for="softwareDeveloper">
                       Software Developer
                     </label>
                   </div>
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="role" id="role" value="Quality Assurance" checked>
+                    <input class="form-check-input" type="radio" name="position" id="role" value="Quality Assurance" checked>
                     <label class="form-check-label" for="qualityAssurance">
                       Quality Assurance
                     </label>
@@ -46,7 +48,7 @@
             <div class="form-group row">   
                 <div class="col-sm-10">    
                 <button type="submit" class="btn btn-default btn-success">Save</button>
-                <a href="/projects/members" class="btn btn-warning">Cancel</a>
+                <a  href="/projects/members/<%= projectid%>" class="btn btn-warning">Cancel</a>
             </div>     
            </div> 
 

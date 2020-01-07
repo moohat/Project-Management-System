@@ -2,71 +2,81 @@
 <div class="container">
     <h1>Edit Profile</h1>
     <hr />
-    <form action="/profile" method="post">
+    <h1>selamat datang , <%= profile.firstname %></h1>
+    <form action="" method="post">
         <div class="form-group row">
             <label for="firstname" class="col-sm-2 col-form-label">First Name</label>
             <div class="col-sm-8">
-                <input type="text" class="form-control" id="firstname" placeholder="First Name" name="firstname" value="">
+                <input type="text" class="form-control" id="firstname" placeholder="First Name" name="firstname" value="<%= profile.firstname %>">
             </div>
         </div>
         <div class="form-group row">
             <label for="lastname" class="col-sm-2 col-form-label">Last Name</label>
             <div class="col-sm-8">
-                <input type="text" class="form-control" id="lastname" placeholder="Last Name" name="lastname" value="">
+                <input type="text" class="form-control" id="lastname" placeholder="Last Name" name="lastname" value="<%= profile.lastname %>">
             </div>
         </div>
         <div class="form-group row">
             <label for="email" class="col-sm-2 col-form-label">Email Address</label>
             <div class="col-sm-8">
-                <input type="text" class="form-control" id="email" placeholder="Email Address" value=""
+                <input type="text" class="form-control" id="email" placeholder="Email Address" value="<%= profile.email %>"
                     name="email" disabled>
             </div>
         </div>
         <div class="form-group row">
             <label for="password" class="col-sm-2 col-form-label">Password</label>
             <div class="col-sm-8">
-                <input type="password" class="form-control" id="password" placeholder="Password" value=""
+                <input type="password" class="form-control" id="password" placeholder="Password" value="<%= profile.password %>"
                     name="password" required>
             </div>
         </div>
-        <div class="form-group row">
-            <label for="member" class="col-sm-2 col-form-label">Role</label>
-            <div class="col-sm-8">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="role" value="Manager" >
-                    <label class="form-check-label" for="role">
-                        Manager
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="role" value="Software Developer" >
-                    <label class="form-check-label" for="role">
-                        Software Developer
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="role" value="Quality Assurance">
-                    <label class="form-check-label" for="role">
-                        Quality Assurance
-                    </label>
+       
+        <fieldset class="form-group">
+            <div class="row">
+                <legend class="col-form-label col-sm-2 pt-0">Position</legend>
+                <div class="col-sm-10">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="position" id="positionManager" value="Manager"
+                        <%= profile.position == 'Manager' ? 'checked' : '' %>>
+                        <label class="form-check-label" for="positionManager">
+                            Manager
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="position" id="positionSoftwareDeveloper" value="Software Developer"
+                        <%= profile.position == 'Software Developer' ? 'checked' : '' %>>
+                        <label class="form-check-label" for="positionManager">
+                            Software Developer
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="position" id="positionQualityAssurance" value="Quality Assurance"
+                        <%= profile.position == 'Quality Assurance' ? 'checked' : '' %>>
+                        <label class="form-check-label" for="positionManager">
+                            Quality Assurance
+                        </label>
+                    </div>
+                 
                 </div>
             </div>
-        </div>
+        </fieldset>
+
         <fieldset class="form-group">
             <div class="row">
                 <legend class="col-form-label col-sm-2 pt-0">Type Job</legend>
                 <div class="col-sm-10">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="typejob" id="typejobfulltime" value="Full Time"
-                          >
-                        <label class="form-check-label" for="typejobfulltime">
+                        <input class="form-check-input" type="radio" name="jobtype" id="jobtypefulltime" value="Full Time"
+                        <%= profile.jobtype == 'Full Time' ? 'checked' : '' %>>
+                        <label class="form-check-label" for="jobtypefulltime">
                             Full Time
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="typejob" id="typejobparttime" value="Part Time"
+                        <input class="form-check-input" type="radio" name="jobtype" id="jobtypeparttime" value="Part Time" <%= profile.jobtype == 'Part Time' ? 'checked' : '' %>
                           >
-                        <label class="form-check-label" for="typejobparttime">
+                        <label class="form-check-label" for="jobtypeparttime">
                             Part Time
                         </label>
                     </div>
