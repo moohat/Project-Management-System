@@ -26,7 +26,7 @@ module.exports = function (pool){
         // if(err) return res.send(err);
         if (data.rows.length > 0) {
           if (data.rows[0].email == email && data.rows[0].password == password) {
-            // data.rows[0].password = null;
+            data.rows[0].password = null;
             req.session.user = data.rows[0];
             console.log(req.session.user);
             
