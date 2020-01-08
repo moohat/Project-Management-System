@@ -199,7 +199,8 @@
           <td><%= item.createddate %></td>
           <td><%= item.updateddate %></td>
           <td><%= item.closeddate %></td>
-          <td> <a href="/projects/issues/<%= item.projectid %>/<%= item.issueid %>/edit" class="btn btn-success"><i class="fa fa-edit"></i> Edit</a>
+          <td>
+             <a href="/projects/issues/<%= item.projectid %>/<%=item.issueid%>/edit" class="btn btn-success"><i class="fa fa-edit"></i> Edit</a>
             <a href="/projects/issues/<%= item.projectid %>/<%= item.issueid %>/delete" class="btn btn-danger"><i class="fa fa-trash"></i> Delete</a>
           </td>
         </tr>

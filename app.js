@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
 var flash = require('connect-flash');
-const fileUpload = require('connect-flash');
+const fileUpload = require('express-fileupload');
 
 //Model setup
 const { Pool } = require("pg");

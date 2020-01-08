@@ -6,7 +6,8 @@
     <br />
       <h2>Add Issues to Project</h2>
       <br />
-      <form action="" method="POST">     
+      <!-- <form action="/projects/issues/<%=/* data[0].projectid */%>/add" method="POST" encType="multipart/form-data">      -->
+        <form action="" method="POST" encType="multipart/form-data">     
            
            
           <!--       Tracker        -->
@@ -124,12 +125,12 @@
                 </div>                
           </div>            
       </div>
-        <!-- Assigne -->
+        <!-- assignee -->
         <div class="form-group row">
-          <label class="col-sm-2 col-form-label">Assignee</label>
+          <label class="col-sm-2 col-form-label">assigneee</label>
           <div class="col-sm-6">
-              <select class="custom-select d-block w-100" id="assigne" name="assigne">
-                <option disabled selected> Choose the assignee... </option>
+              <select class="custom-select d-block w-100" id="assignee" name="assignee">
+                <option disabled selected> Choose the assigneee... </option>
                 <% data.forEach((item, index) =>{ %>
                   <option value="<%= item.userid %>"> <%= item.firstname + " "+item.lastname %> </option>
                 <% }) %>                     

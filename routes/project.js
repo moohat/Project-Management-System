@@ -378,16 +378,19 @@ module.exports = function (pool) {
     router.post("/issues/:projectid/add", (req, res, next) => {
         console.log(req.files.sampleFile);
 
-        let activityIssue = `INSERT INTO activity(time, title, description,projectid, author) VALUES(NOW(), '${req.body.subject}', 'New Issue Created : Tracker : [${req.body.tracker}] Subject : ${req.body.subject} - (${req.body.status}) - Done: ${req.body.done}', ${req.params.projectid},(SELECT author FROM projects WHERE projectid = ${req.params.projectid}))`;
 
-        pool.query(activityIssue, err => {
+        let sqlActivityIssue = `INSERT INTO activity(time, title, description,projectid, author) VALUES(NOW(), '${req.body.subject}', 'New Issue Created : Tracker : [${req.body.tracker}] Subject : ${req.body.subject} - (${req.body.status}) - Done: ${req.body.done}', ${req.params.projectid},(SELECT author FROM projects WHERE projectid = ${req.params.projectid}))`;
+        console.log(sqlActivityIssue);
+        
+
+        pool.query(sqlActivityIssue, err => {
             if (!req.files || Object.keys(req.files).length === 0) {
-                let sql2 = `INSERT INTO issues(projectid,tracker,subject,description,status,priority,assignee,author,startdate,duedate,estimatedtime,done,files,spenttime,targetversion,createddate)
+                let sqlAddIssue = `INSERT INTO issues(projectid,tracker,subject,description,status,priority,assignee,author,startdate,duedate,estimatedtime,done,files,spenttime,targetversion,createddate)
             VALUES(${req.params.projectid},'${req.body.tracker}','${req.body.subject}','${req.body.description}','${req.body.status}','${req.body.priority}',${req.body.assignee},(SELECT author FROM projects WHERE projectid = ${req.params.projectid}),'${req.body.startdate}','${req.body.duedate}','${req.body.estimatedtime}',${req.body.done},null,'0','${req.body.targetversion}',NOW())`;
                 if (err) {
                     res.send(err)
                 }
-                pool.query(sql2, err => {
+                pool.query(sqlAddIssue, err => {
                     res.redirect(`/projects/issues/${req.params.projectid}`);
                 });
             } else {
@@ -395,13 +398,13 @@ module.exports = function (pool) {
                 let nameFile = sampleFile.name.replace(/ /g, "_");
                 nameFile = Date.now() + "_" + nameFile;
 
-                let sql2 = `INSERT INTO issues(projectid,tracker,subject,description,status,priority,assignee,author,startdate,duedate,estimatedtime,done,files,spenttime,targetversion,createddate)
+                let sqlAddIssue = `INSERT INTO issues(projectid,tracker,subject,description,status,priority,assignee,author,startdate,duedate,estimatedtime,done,files,spenttime,targetversion,createddate)
                     VALUES(${req.params.projectid},'${req.body.tracker}','${req.body.subject}','${req.body.description}','${req.body.status}','${req.body.priority}',${req.body.assignee},(SELECT author FROM projects WHERE projectid = ${req.params.projectid}),'${req.body.startdate}','${req.body.duedate}','${req.body.estimatedtime}',${req.body.done},'${nameFile}','0','${req.body.targetversion}',NOW())`;
 
-                pool.query(sql2, err => {
-                    console.log("with file", sql2);
+                pool.query(sqlAddIssue, err => {
+                    console.log("with file", sqlAddIssue);
                     sampleFile.mv(
-                        path.join(__dirname, `../public/images/{nameFile}`),
+                        path.join(__dirname, `../public/images/'${nameFile}'`),
                         function (err) {
                             if (err) {
                                 return res.status(500).send(err);
@@ -421,27 +424,37 @@ module.exports = function (pool) {
     });
 
 
-
     //ISSUES LIST - EDIT ISSUES
     router.get("/issues/:projectid/:issueid/edit", (req, res, next) =>{
-        let sql1 = `SELECT * FROM issues WHERE issueid = ${req.params.issueid}`;
-        let sql2 = `SELECT userid, email, CONCAT(firstname, ' ', lastname) AS fullname FROM users HWERE userid IN (SELECT userid FROM members WHERE projectid = ${req.params.projectid})`;
-
-        pool.query(sql1, (err, data) =>{
-            pool.query(sql2, (err, users) =>{
-                res.render("project/overview/issues/editIssues", {
+        let sqlSelectIssue = `SELECT * FROM issues WHERE issueid = ${req.params.issueid}`;
+        let sqlSelectUser = `SELECT userid, email, CONCAT(firstname, ' ', lastname) AS fullname FROM users WHERE userid IN (SELECT userid FROM members WHERE projectid = ${req.params.projectid})`;
+        // res.render("projects/overview/issues/editIssues");
+        console.log(sqlSelectUser);
+        
+     
+        pool.query(sqlSelectIssue, (err, data) =>{
+            if (err) {
+                res.send(err)
+            }
+            pool.query(sqlSelectUser, (err, users) =>{
+                if (err) {
+                    res.send(err)
+                }
+                res.render("projects/overview/issues/editIssues", {
                     data: data.rows[0],
+                    
                     users: users.rows,
                     moment,  
-
+                    
                 });
+                console.log(data.rows);
             });
         });
     });
 
      // ISSUES LIST - EDIT ISSUES & ADD ACTIVITY - APPLY
   router.post(
-    "/issues/:projectid/:issueid/edit-save",
+    "/issues/:projectid/:issueid/edit",
     helpers.isLoggedIn,
     (req, res, next) => {
       let sql1 = `UPDATE issues SET tracker = '${
@@ -475,8 +488,8 @@ module.exports = function (pool) {
         req.params.projectid
       }));`;
       console.log(sql1);
-      db.query(sql1, err => {
-        db.query(sql2, err => {
+      pool.query(sql1, err => {
+        pool.query(sql2, err => {
           res.redirect(`/projects/issues/${req.params.projectid}`);
         });
       });
@@ -488,16 +501,16 @@ module.exports = function (pool) {
     res.locals.title = "Project | Edit Issues";
 
     let sql1 = `SELECT * FROM issues WHERE issueid = ${req.params.issueid}`;
-    db.query(sql1, (err, data) => {
+    pool.query(sql1, (err, data) => {
       let sql2 = `INSERT INTO activity(time,title,description,projectid,author)
                   VALUES(NOW(),'${data.rows[0].subject}','Issue was deleted by userid : ${req.session.user.userid}, 
                   (${req.session.user.firstname} ${req.session.user.lastname}) : [${data.rows[0].tracker}] 
                   Subject : ${data.rows[0].subject} - (${data.rows[0].status}) - Done: ${data.rows[0].done}%.',
                   ${req.params.projectid},(SELECT author FROM projects WHERE projectid = ${req.params.projectid}))`;
 
-      db.query(sql2, err => {
+      pool.query(sql2, err => {
         let sql3 = `DELETE FROM issues WHERE issueid = ${req.params.issueid} AND projectid = ${req.params.projectid} `;
-        db.query(sql3, err => {
+        pool.query(sql3, err => {
           res.redirect(`/projects/issues/${req.params.projectid}`);
         });
       });
