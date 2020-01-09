@@ -158,6 +158,8 @@ module.exports = function (pool) {
         let projectid = req.params.projectid;
         let sql1 = `SELECT * FROM members JOIN projects ON (members.projectid = ${projectid} AND projects.projectid = ${projectid}) JOIN users ON members.userid = users.userid`;
         let sql2 = `SELECT * FROM issues WHERE projectid = ${projectid}`;
+            console.log(sql1);
+            
 
         pool.query(sql1, (err, data) => {
             pool.query(sql2, (err, issues) => {
@@ -165,10 +167,10 @@ module.exports = function (pool) {
                 let bugOpen = 0;
                 let bugTotal = 0;
                 issues.rows.forEach((item, index) => {
-                    if (item.tracker == "Bug" && item.status != "Closed") {
+                    if (item.tracker == "bug" && item.status != "closed") {
                         bugOpen += 1;
                     }
-                    if (item.tracker == "Bug") {
+                    if (item.tracker == "bug") {
                         bugTotal += 1;
                     }
                 });
@@ -176,10 +178,10 @@ module.exports = function (pool) {
                 let featureOpen = 0;
                 let featureTotal = 0;
                 issues.rows.forEach((item, index) => {
-                    if (item.tracker == "Feature" && item.status != "Closed") {
+                    if (item.tracker == "feature" && item.status != "closed") {
                         featureOpen += 1;
                     }
-                    if (item.tracker == "Feature") {
+                    if (item.tracker == "feature") {
                         featureTotal += 1;
                     }
                 });
@@ -188,10 +190,10 @@ module.exports = function (pool) {
                 let supportOpen = 0;
                 let supportTotal = 0;
                 issues.rows.forEach((item, index) => {
-                    if (item.tracker == "Support" && item.status != "Closed") {
+                    if (item.tracker == "support" && item.status != "closed") {
                         supportOpen += 1;
                     }
-                    if (item.tracker == "Support") {
+                    if (item.tracker == "support") {
                         supportTotal += 1;
                     }
                 });
@@ -396,7 +398,7 @@ module.exports = function (pool) {
             } else {
                 let sampleFile = req.files.sampleFile;
                 let nameFile = sampleFile.name.replace(/ /g, "_");
-                nameFile = Date.now() + "_" + nameFile;
+                nameFile = Date.now() +"_"+nameFile;
 
                 let sqlAddIssue = `INSERT INTO issues(projectid,tracker,subject,description,status,priority,assignee,author,startdate,duedate,estimatedtime,done,files,spenttime,targetversion,createddate)
                     VALUES(${req.params.projectid},'${req.body.tracker}','${req.body.subject}','${req.body.description}','${req.body.status}','${req.body.priority}',${req.body.assignee},(SELECT author FROM projects WHERE projectid = ${req.params.projectid}),'${req.body.startdate}','${req.body.duedate}','${req.body.estimatedtime}',${req.body.done},'${nameFile}','0','${req.body.targetversion}',NOW())`;
@@ -404,7 +406,7 @@ module.exports = function (pool) {
                 pool.query(sqlAddIssue, err => {
                     console.log("with file", sqlAddIssue);
                     sampleFile.mv(
-                        path.join(__dirname, `../public/images/'${nameFile}'`),
+                        path.join(__dirname, `../public/images/${nameFile}`),
                         function (err) {
                             if (err) {
                                 return res.status(500).send(err);
@@ -419,9 +421,9 @@ module.exports = function (pool) {
 
     });
 
-    router.post("/issues/:projectid/add",(req, res, next) =>{
+    // router.post("/issues/:projectid/add",(req, res, next) =>{
         
-    });
+    // });
 
 
     //ISSUES LIST - EDIT ISSUES
@@ -433,68 +435,96 @@ module.exports = function (pool) {
         
      
         pool.query(sqlSelectIssue, (err, data) =>{
-            if (err) {
-                res.send(err)
-            }
+          
             pool.query(sqlSelectUser, (err, users) =>{
                 if (err) {
                     res.send(err)
                 }
+                console.log(data.rows[0]);
                 res.render("projects/overview/issues/editIssues", {
                     data: data.rows[0],
+                    data2: data.rows,
                     
                     users: users.rows,
                     moment,  
                     
                 });
-                console.log(data.rows);
             });
         });
     });
 
-     // ISSUES LIST - EDIT ISSUES & ADD ACTIVITY - APPLY
-  router.post(
-    "/issues/:projectid/:issueid/edit",
-    helpers.isLoggedIn,
-    (req, res, next) => {
-      let sql1 = `UPDATE issues SET tracker = '${
-        req.body.tracker
-      }', subject = '${req.body.subject}',
-    description = '${req.body.description}', status = '${
-        req.body.status
-      }', priority = '${req.body.priority}',
-    assignee = ${req.body.assignee}, startdate = '${
-        req.body.startdate
-      }', duedate = '${req.body.duedate}',
-    estimatedtime = '${req.body.estimatedtime}',done = ${
-        req.body.done
-      }, files = '${req.body.file}', spenttime = ${
-        req.body.spenttime
-      }, targetversion = '${req.body.targetversion}', updateddate = NOW() ${
-        req.body.status == "Closed" ? `, closeddate = NOW()` : ""
-      }  WHERE projectid = ${req.params.projectid} AND issueid = ${
-        req.params.issueid
-      }`;
+//      // ISSUES LIST - EDIT ISSUES & ADD ACTIVITY - APPLY
+//   router.post("/issues/:projectid/:issueid/edit",(req, res, next) => {
+//       let sql1 = `UPDATE issues SET tracker = '${req.body.tracker}', subject = '${req.body.subject}',
+//     description = '${req.body.description}', status = '${
+//         req.body.status
+//       }', priority = '${req.body.priority}',
+//     assignee = ${req.body.assignee}, startdate = '${
+//         req.body.startdate
+//       }', duedate = '${req.body.duedate}',
+//     estimatedtime = '${req.body.estimatedtime}',done = ${
+//         req.body.done
+//       }, files = '${req.body.file}', spenttime = ${
+//         req.body.spenttime
+//       }, targetversion = '${req.body.targetversion}', updatedate = NOW() ${
+//         req.body.status == "closed" ? `, closeddate = NOW()` : ""
+//       }  WHERE projectid = ${req.params.projectid} AND issueid = ${
+//         req.params.issueid
+//       }`;
 
-      let sql2 = `INSERT INTO activity(time,title,description,projectid,author)
-    VALUES(NOW(),'${req.body.subject}','${
-        req.body.status == "Closed" ? `Issue was closed : ` : ``
-      }Issue ID : #${req.params.issueid} : [${req.body.tracker}] Subject : ${
-        req.body.subject
-      } - (${req.body.status}) - 
-    Done: ${req.body.done}%.',${
-        req.params.projectid
-      },(SELECT author FROM projects WHERE projectid = ${
-        req.params.projectid
-      }));`;
-      console.log(sql1);
-      pool.query(sql1, err => {
-        pool.query(sql2, err => {
-          res.redirect(`/projects/issues/${req.params.projectid}`);
-        });
-      });
-    }
-  );
+//       let sql2 = `INSERT INTO activity(time,title,description,projectid,author)
+//     VALUES(NOW(),'${req.body.subject}','${
+//         req.body.status == "closed" ? `Issue was closed : ` : ``
+//       }Issue ID : #${req.params.issueid} : [${req.body.tracker}] Subject : ${
+//         req.body.subject
+//       } - (${req.body.status}) - 
+//     Done: ${req.body.done}%.',${
+//         req.params.projectid
+//       },(SELECT author FROM projects WHERE projectid = ${
+//         req.params.projectid
+//       }));`;
+//       console.log(sql1);
+//       pool.query(sql1, err => {
+//         pool.query(sql2, err => {
+//           res.redirect(`/projects/issues/${req.params.projectid}`);
+//         });
+//       });
+//     }
+//   );
+
+
+     // ISSUES LIST - EDIT ISSUES & ADD ACTIVITY - APPLY
+     router.post("/issues/:projectid/:issueid/edit",(req, res, next) => {
+          const {
+              tracker,
+              subject,
+              description,
+              status,
+              priority,
+              assignee,
+              startdate,
+              duedate,
+              estimatedtime,
+              done,
+              file,
+              spenttime,
+              targetversion} = req.body;
+        const {projectid, issueid} = req.params;
+          let sql1 = `UPDATE issues SET tracker = '${tracker}', subject = '${subject}',description = '${description}', status = '${status}', priority = '${priority}',assignee = ${assignee}, startdate = '${startdate}', duedate = '${duedate}',estimatedtime = '${estimatedtime}',done = ${done}, files = '${file}', spenttime = ${spenttime},targetversion = '${targetversion}', updatedate = NOW() ${status == "closed" ? `, closeddate = NOW()` : ""} WHERE projectid = ${projectid} AND issueid = ${ issueid }`;
+    
+          let sql2 = `INSERT INTO activity(time,title,description,projectid,author)
+        VALUES(NOW(),'${subject}','${
+            status == "closed" ? `Issue was closed : ` : ``
+          }Issue ID : #${issueid} : [${tracker}] Subject : ${subject} - (${status}) - Done: ${done}%.',${projectid
+          },(SELECT author FROM projects WHERE projectid = ${projectid}));`;
+          console.log(sql1);
+          pool.query(sql1, err => {
+            pool.query(sql2, err => {
+              res.redirect(`/projects/issues/${projectid}`);
+            });
+          });
+        }
+      );
 
   // ISSUES LIST - DELETE ISSUES
   router.get("/issues/:projectid/:issueid/delete", (req, res, nect) => {
