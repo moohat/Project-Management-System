@@ -107,7 +107,7 @@ module.exports = function (pool) {
         //Pagination
         const page = req.query.page || 1;
         let url = req.url == '/' ? '/?page=1' : req.url;
-        const limit = 5;
+        const limit = 1;
         const offset = (page - 1) * limit;
         let sql = `SELECT COUNT(*) AS total FROM projects  `;
         //check params filter
@@ -395,17 +395,29 @@ module.exports = function (pool) {
 
     // router.get("/members/:projectid", (req, res, next) =>{
     router.get("/members/:projectid", (req, res, next) => {
-        const page = req.query.page || 1;
-        const limit = 3;
         let projectid = req.params.projectid;
-        let sql = `SELECT * FROM members JOIN projects ON (members.projectid = ${projectid} AND projects.projectid = ${projectid}) JOIN users ON members.userid = users.userid`;
-        pool.query(sql, (err, data) => {
-            res.render("projects/overview/members/listMember", {
-                data: data.rows,
-
+        const page = req.query.page || 1;
+        let url = req.url == '/' ? '/?page=1' : req.url;
+        const limit = 1;
+        const offset = (page -1) * limit;
+        let sqlMember = `SELECT COUNT(*) AS total FROM members JOIN projects ON (members.projectid = ${projectid} AND projects.projectid = ${projectid}) JOIN users ON members.userid = users.userid `;
+        pool.query(sqlMember, (err, response) =>{
+            if (err) return res.send(err);
+            const pages = Math.ceil(response.rows[0].total/limit);
+            let sql = `SELECT * FROM members JOIN projects ON (members.projectid = ${projectid} AND projects.projectid = ${projectid}) JOIN users ON members.userid = users.userid LIMIT ${limit} OFFSET ${offset}`;
+            pool.query(sql, (err, data) => {
+                res.render("projects/overview/members/listMember", {
+                    url,
+                    page,
+                    pages,
+                    data: data.rows,
+                    query: req.query,
+    
+                });
+    
             });
-
-        });
+        })
+        // let sql = `SELECT * FROM members JOIN projects ON (members.projectid = ${projectid} AND projects.projectid = ${projectid}) JOIN users ON members.userid = users.userid`;
     });
 
     //add members
