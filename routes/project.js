@@ -34,6 +34,7 @@ module.exports = function (pool) {
     //     });
     // });
 
+    //todo: pagination and filter
     // router.get("/", (req, res, next) => {
 
     //     userid = req.params.userid;
@@ -236,14 +237,61 @@ module.exports = function (pool) {
                         members: member.rows,
                         isMember: isMember.rows.map(item => item.userid),
                         user:req.session.user
-                    })
-
-                    
-                })
-            })
-        })
-
+                    });                    
+                });
+            });
+        });
     });
+
+    //GET EDIT PROJECT
+    router.post("/edit/:projectid", (req, res, next) => {
+        let projectid = req.params.projectid;
+
+        let sqlDeleteMember = `DELETE FROM members WHERE projectid = ${projectid}`;
+        let sqlUpdateProject = `UPDATE projects SET name = '${req.body.projectname}' WHERE projectid = ${projectid}`;
+        let sqlSelectProject = `SELECT * FROM projects WHERE projectid = ${projectid}`;
+
+        pool.query(sqlDeleteMember, err =>{
+            pool.query(sqlUpdateProject, err =>{
+                pool.query(sqlSelectProject, (err, select) =>{
+                    let arr = [];
+                    let idProject = projectid;
+                    let member = req.body.member;
+                    if(typeof member == "string"){
+                        arr.push(`(${member}, ${idProject})`);
+                    }else{
+                        member.forEach((item, index) =>{
+                            arr.push(`(${member[index]}, ${idProject})`);
+                        });
+                    }
+
+                    let sqlSaveMember = `INSERT INTO members(userid, projectid) VALUES ${arr.join(",")}`;
+                    pool.query(sqlSaveMember, err =>{
+                        res.redirect("/projects")
+                    });
+                });
+            });
+        });
+    });
+
+
+    //DELETE PROJECT
+    router.get("/delete/:projectid", (req, res, next) =>{
+        // console.log(req.params);
+        let projectid = req.params.projectid;
+        console.log(projectid);
+        
+        let sqlDeleteProject = `DELETE FROM members WHERE projectid = ${projectid};
+        DELETE FROM issues WHERE projectid = ${projectid};
+        DELETE FROM projects WHERE projectid = ${projectid}`;
+        console.log(sqlDeleteProject);
+
+        pool.query(sqlDeleteProject, (err, data) => {
+            // console.log(sqlDeleteProject);
+            res.redirect(`/projects`);
+
+        });
+    })
 
     //OVERVIEW PROJECT
     router.get("/overview/:projectid", (req, res, next) => {
@@ -347,6 +395,8 @@ module.exports = function (pool) {
 
     // router.get("/members/:projectid", (req, res, next) =>{
     router.get("/members/:projectid", (req, res, next) => {
+        const page = req.query.page || 1;
+        const limit = 3;
         let projectid = req.params.projectid;
         let sql = `SELECT * FROM members JOIN projects ON (members.projectid = ${projectid} AND projects.projectid = ${projectid}) JOIN users ON members.userid = users.userid`;
         pool.query(sql, (err, data) => {
