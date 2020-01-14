@@ -12,7 +12,7 @@ module.exports = function (pool){
 //   });
 
      //todo: function get pagination only
-    router.get("/", (req, res, next) => {
+    router.get("/",helpers.isLoggedIn, (req, res, next) => {
         const page = req.query.page || 1;
         let url = req.url == '/' ? '/?page=1' : req.url;
         const limit = 3;
@@ -39,7 +39,7 @@ module.exports = function (pool){
     });
 
   /* GET add user page. */
-router.get('/add', function(req, res, next) {
+router.get('/add',helpers.isLoggedIn, function(req, res, next) {
   res.render('users/addUser');
 });
 

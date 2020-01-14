@@ -24,15 +24,15 @@
             <!-- POSITION CHOICES -->
             <div class="form-group col-sm">
               <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="manager" name="position" value="Manager"  <%= data.role == 'Manager' ? ' checked' : '' %> required >
+                <input type="radio" class="custom-control-input" id="manager" name="position" value="Manager"  <%= data.role == 'Manager' ? ' checked' : '' %>  >
                 <label class="custom-control-label" for="manager">Manager</label>
               </div>
               <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="softdev" name="position" value="Software Developer">
-                <label class="custom-control-label" for="softdev">Software Developer</label>
+                <input type="radio" class="custom-control-input" id="softdev" name="position" value="Software Developer"   <%= data.role == 'Software Developer' ? ' checked' : '' %>>
+                <label class="custom-control-label" for="softdev" >Software Developer</label>
               </div>
               <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="qa" name="position" value="Quality Assurance">
+                <input type="radio" class="custom-control-input" id="qa" name="position" value="Quality Assurance" <%= data.role == 'Quality Assurance' ? ' checked' : '' %>>
                 <label class="custom-control-label" for="qa">Quality Assurance</label>
               </div>
             </div>
