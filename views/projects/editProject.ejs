@@ -8,20 +8,20 @@
         <div class="form-group row">
           <label for="string" class="col-sm-2 col-form-label">Name</label>
           <div class="col-sm-6">
-              <input type="text" class="form-control" id="projectname" name="projectname" value="<%= project.name  %>">
+              <input type="text" class="form-control" id="name" name="name" value="<%= name  %>">
           </div>
         </div>
         <div class="form-group row">
             <label for="member" class="col-sm-2 col-form-label">Members</label>
-            <div class="col-sm-3">
-                <% members.forEach((member) => {%>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="member" id="<%=member.userid %>" value="<%= member.userid %>" <%= isMember.includes(member.userid) ? ' checked': '' %>/>
-                    <label class="form-check-label" for="<%= member.userid%>">
-                        <%= member.firstname + " "+ member.lastname %>
-                    </label>
+            <div class="col-sm-10">
+                <% users.forEach((item) => { %>
+                <div class="custom-control custom-checkbox my-1 mr-sm-2">
+                    <input type="checkbox" class="custom-control-input" id="customControlInline<%=item.userid%>"
+                        name="member" value="<%= item.userid%>, '<%= item.roles %>'" <%= members.includes(item.userid)  ? ' checked': ''%>>
+                    <label class="custom-control-label"
+                        for="customControlInline<%=item.userid%>"><%= item.firstname %> <%= item.lastname %></label>
                 </div>
-                <% }) %>
+                <% })%>
             </div>
 
             </div>
