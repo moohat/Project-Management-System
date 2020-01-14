@@ -34,7 +34,62 @@ module.exports = function (pool) {
     //     });
     // });
 
+    // router.get("/", (req, res, next) => {
+
+    //     userid = req.params.userid;
+
+    //     // filter mode
+    //     let params = [];
+    //     if (req.query.check_id && req.query.id) {
+    //         params.push(`projectid = '${req.query.id}' `)
+
+    //     }
+    //     if (req.query.check_name && req.query.name) {
+    //         params.push(`name ILIKE '%${req.query.name}%' `)
+    //     }
+    //     //Pagination
+    //     const page = req.query.page || 1;
+    //     let url = req.url == '/' ? '/?page=1' : req.url;
+    //     const limit = 5;
+    //     const offset = (page - 1) * limit;
+    //     let sql = `SELECT COUNT(*) AS total FROM projects  `;
+    //     //check params filter
+    //     if (params.length > 0) {
+    //         sql += `WHERE ${params.join(' AND ')}`
+    //     }
+    //     pool.query(sql, (err, response) => {
+    //         if (err) return res.send(err);
+    //         const pages = Math.ceil(response.rows[0].total / limit);
+    //         console.log('HALAMAN', response.rows);
+    //         sql = `SELECT * FROM projects `;
+
+    //         //check params filter
+    //         if (params.length > 0) {
+    //             sql += `WHERE ${params.join(' AND ')}`
+    //         }
+    //         sql += ` LIMIT ${limit} OFFSET ${offset}`;
+    //         console.log(sql);
+
+    //         pool.query(sql, (err, response) => {
+    //             let tableOption = `SELECT projectopt FROM users WHERE userid = ${userid}`;
+                
+    //             if (err) return res.send(err);
+    //             res.render('projects/listProject', {
+    //                 data: response.rows,
+    //                 query: req.query,
+    //                 pages,
+    //                 page,
+    //                 url
+
+
+    //             });
+    //         });
+    //     });
+    // });
+
+
     router.get("/", (req, res, next) => {
+
 
         // filter mode
         let params = [];
@@ -44,64 +99,78 @@ module.exports = function (pool) {
         }
         if (req.query.check_name && req.query.name) {
             params.push(`name ILIKE '%${req.query.name}%' `)
-
         }
-
-
+        if (req.query.check_member && req.query.member) {
+            params.push(`fullname ILIKE '%${req.query.member}%' `)
+        }
         //Pagination
         const page = req.query.page || 1;
-
         let url = req.url == '/' ? '/?page=1' : req.url;
         const limit = 5;
         const offset = (page - 1) * limit;
         let sql = `SELECT COUNT(*) AS total FROM projects  `;
         //check params filter
-
         if (params.length > 0) {
             sql += `WHERE ${params.join(' AND ')}`
         }
-
         pool.query(sql, (err, response) => {
             if (err) return res.send(err);
             const pages = Math.ceil(response.rows[0].total / limit);
             console.log('HALAMAN', response.rows);
-            sql = `SELECT * FROM projects `;
+            sql = `SELECT members.projectid, MAX(projects.name) projectname, STRING_AGG(CONCAT(users.firstname, ' ', users.lastname), ', ') fullname FROM members INNER JOIN projects USING(projectid) INNER JOIN users USING(userid) `;
+            
 
             //check params filter
             if (params.length > 0) {
                 sql += `WHERE ${params.join(' AND ')}`
             }
-            sql += ` LIMIT ${limit} OFFSET ${offset}`;
+            sql += ` GROUP BY projectid LIMIT ${limit} OFFSET ${offset}`;
             console.log(sql);
 
-            pool.query(sql, (err, response) => {
-                if (err) return res.send(err);
-                res.render('projects/listProject', {
-                    data: response.rows,
-                    query: req.query,
-                    pages,
-                    page,
-                    url
+            pool.query(sql, (err, projects) => {
 
-
-                });
+                //column option
+                let tableOption = `SELECT projectopt FROM users WHERE userid = ${req.session.user.userid}`;
+                pool.query(tableOption, (err, option) =>{
+                    // console.log(option.rows[0].projectopt);                    
+                    if (err) return res.send(err);
+                    res.render('projects/listProject', {
+                        data: projects.rows,
+                        query: req.query,
+                        pages,
+                        page,
+                        url,
+                        // columns option
+                        option: option.rows[0].projectopt
+                    });
+                    // console.log("ini adalah "+ option);
+                    
+                })
+                
             });
         });
     });
 
 
     router.post('/', (req, res) => {
-        let sql = `UPDATE users SET projectsoptions = '${JSON.stringify(req.body)}' WHERE userid = ${req.session.user.userid}`
-        pool.query(sql, (err) => {
-            if (err) {
-                return res.send(err)
-            };
-            res.redirect('/projects', {
-                // user: req.session.user
+        let saveKey = Object.keys(req.body);
 
-            })
+        let saveObject = {
+            projectid: saveKey.includes("projectid"),
+            projectname: saveKey.includes("projectname"),
+            members: saveKey.includes("members")
+        };
+        let sql = `UPDATE users SET projectopt = '${JSON.stringify(saveObject)}' WHERE userid = ${req.session.user.userid}`;
+        console.log('ini adalah sqlnya update '+ sql);
+        
+        pool.query(sql, (err) => {
+            
+            res.redirect('/projects')
         });
     });
+
+
+
 
     //GET FORM ADD
     router.get('/add', (req, res, next) => {
@@ -149,7 +218,30 @@ module.exports = function (pool) {
         });
     });
 
-    router.get("/edit/:id", (req, res) => {
+
+//GET EDIT PROJECT
+    router.get("/edit/:projectid", (req, res, next) => {
+        res.locals.title = "Edit Project";
+        let projectid = req.params.projectid;
+        let sqlProject = `SELECT * FROM projects WHERE projectid = ${projectid}`;
+        let sqlUsers = `SELECT * FROM users`;
+        let sqlMembers = `SELECT * FROM members WHERE projectid = ${projectid}`;
+        pool.query(sqlProject, (err, project) =>{
+            pool.query(sqlUsers, (err, member) =>{
+                pool.query(sqlMembers, (err, isMember)=>{
+                    console.log(isMember.rows.map(item => item.userid));
+
+                    res.render("projects/editProject",{
+                        project: project.rows[0],
+                        members: member.rows,
+                        isMember: isMember.rows.map(item => item.userid),
+                        user:req.session.user
+                    })
+
+                    
+                })
+            })
+        })
 
     });
 
@@ -223,25 +315,28 @@ module.exports = function (pool) {
 
     router.get("/activity/:projectid", (req, res, next) => {
         let projectid = req.params.projectid;
-        let sql1 = `SELECT * FROM projects WHERE projectid = ${projectid} ORDER BY projectid DESC`;
-        let sql2 = `SELECT * ,(SELECT CONCAT(firstname, ' ', lastname) AS author FROM users WHERE projectid = ${projectid}) FROM activity WHERE projectid = ${projectid} ORDER BY activityid DESC`;
+        
+        let sqlProject = `SELECT * FROM projects WHERE projectid = ${projectid} ORDER BY projectid DESC`;
+        let sql2 = `SELECT * ,(SELECT CONCAT(firstname, ' ', lastname) AS author FROM users WHERE userid = activity.author AND projectid = ${projectid}) FROM activity WHERE projectid = ${projectid} ORDER BY activityid DESC`;
+       
         // let sql2 = `SELECT * FROM activity WHERE `
         console.log(sql2);
 
-        pool.query(sql1, (err, data) => {
+        pool.query(sqlProject, (err, data) => {
             // console.log(data);
 
-            if (err) {
-                return res.send(err)
-            };
+            // if (err) {
+            //     return res.send(err)
+            // };
             pool.query(sql2, (err, issues) => {
-                if (err) {
-                    return res.send(err)
-                };
+                // if (err) {
+                //     return res.send(err)
+                // };
                 // console.log(sql2);
                 res.render("projects/overview/activity/listActivity", {
                     data: data.rows,
                     issues: issues.rows,
+                    moment
                 });
             });
         });

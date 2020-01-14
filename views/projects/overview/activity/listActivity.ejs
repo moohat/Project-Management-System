@@ -11,13 +11,13 @@
         Activity
       </h5>
       <div class="card">
-        <div class="card-header">Project Activity</div>
+        <div class="card-header">Project Activity# <%= data.name %></div>
         <div class="list-group">
           <!-- ISSUES -->
           <% if(issues.length > 0){ %> <% issues.forEach((item, index) =>{ %>
 
           <li class="list-group-item">
-            <span class="badge badge-primary badge-pill"><%= item.time %></span>
+            <span class="badge badge-primary badge-pill"><%= moment(item.time).format("YYYY-MM-DD HH:mm ha") %></span>
             <p class="mb-1"><%= item.description %></p>
             <small>Author: <%= item.author %></small>
           </li>
