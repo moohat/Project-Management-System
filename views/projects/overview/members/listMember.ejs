@@ -132,13 +132,13 @@
          <nav aria-label="table">
              <ul class="pagination">
                  <li class="page-item <%= page == 1 ? 'disabled': ''; %>"><a class="page-link"
-                         href="/?page=<%= parseInt(page) - 1%>">Previous</a></li>
+                  href="/projects<%= url.replace(`page=${parseInt(page)}`, `page=${parseInt(page) - 1}`) %>">Previous</a></li>
                  <% for (let i = 1; i <= pages; i++) { %>
                  <li class="page-item <%= page == i ? 'active': ''; %>"><a class="page-link"  href="/projects<%= url.replace(`page=${page}`, `page=${i}`) %>">
                          <%= i %></a></li>
                  <% }; %>
                  <li class="page-item <%= page == pages ? 'disabled': ''; %>"><a class="page-link"
-                         href="/projects?page=<%= parseInt(page) + 1%>">Next</a></li>
+                  href="/projects<%= url.replace(`page=${parseInt(page)}`, `page=${parseInt(page) + 1}`) %>">Next</a></li>
              </ul>
          </nav>
 

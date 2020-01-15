@@ -38,7 +38,7 @@
           <div class="form-group row">
             <label for="string" class="col-sm-2 col-form-label">Subject</label>
             <div class="col-sm-6">
-                <input type="text" class="form-control" id="subject"  name="subject" value="<%= data.subject %>">
+                <input type="text" class="form-control" id="subject"  name="subject" value="<%= data.subject %>" required>
             </div>
           </div>
 
@@ -46,7 +46,7 @@
           <div class="form-group row">
             <label for="string" class="col-sm-2 col-form-label">Description</label>
             <div class="col-sm-6">
-                <textarea class="form-control" id="description" name="description" placeholder="Description" rows="3" > <%= data.description %></textarea>
+                <textarea   class="form-control" id="description" name="description" placeholder="Description" rows="3" required> <%= data.description %></textarea required>
             </div>
           </div>
           
@@ -55,7 +55,7 @@
             <label for="string" class="col-sm-2 col-form-label">Status</label>
             <div class="col-sm-6">
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="status" id="status" value="new" <%= data.status == 'new' ? 'disabled' : '' %>>
+                  <input class="form-check-input" type="radio" name="status" id="status" value="new" <%= data.status == 'new' ? 'checked' : '' %>>
                   <label class="form-check-label" for="new">
                     New
                   </label>
@@ -154,7 +154,7 @@
           <div class="form-group row">
             <label for="string" class="col-sm-2 col-form-label">Estimated Time</label>
             <div class="col-sm-6">
-                <input type="number" class="form-control"   name="estimatedtime" value="<%= data.estimatedtime %>">
+                <input type="number" class="form-control"   name="estimatedtime" value="<%= data.estimatedtime %>" required>
             </div>
           </div>
           <!-- Done (%) -->
@@ -183,7 +183,8 @@
       <div class="form-group row">
             <label for="string" class="col-sm-2 col-form-label">File</label>
             <div class="col-sm-6">
-                <input type="file" class="form-control"  name="sampleFile" value="<%=data.files %>">
+              <input type="hidden" name="filename" value="<%= data.files %>"/>
+                <input type="file" class="form-control"  name="doc" value="<%=data.files %>" required>
                 <label for="sampleFile" class="file-label" ><%= data.files %></label>
             </div>
             <a href="/images/<%= data.files %>" class="btn"> <i class="fa fa-download fa-2x"></i> </a>
@@ -193,7 +194,7 @@
       <div class="form-group row">
             <label for="string" class="col-sm-2 col-form-label">Spent Time (Hours)</label>
             <div class="col-sm-6">
-                <input type="number" class="form-control"  name="spenttime" id="spenttime" value="<%= data.spenttime %>">
+                <input type="number" class="form-control"  name="spenttime" id="spenttime" value="<%= data.spenttime %>" required>
             </div>
           </div>
 
@@ -201,9 +202,48 @@
       <div class="form-group row">
             <label for="string" class="col-sm-2 col-form-label">Target Version</label>
             <div class="col-sm-6">
-                <input type="text" class="form-control"  name="targetversion" value="<%= data.targetversion %>">
+                <input type="text" class="form-control"  name="targetversion" value="<%= data.targetversion %>" required>
             </div>
           </div>
+
+          <!-- Author--> 
+      <div class="form-group row">
+            <label for="string" class="col-sm-2 col-form-label">Author</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control"  name="author" value="<%= data.author %>" readonly>
+            </div>
+          </div>
+          <!--Created Date-->
+          <div class="form-group row">
+            <label for="string" class="col-sm-2 col-form-label">Created Date</label>
+            <div class="col-sm-6">
+                <input type="date" class="form-control" name="createddate" value="<%= moment( data.createddate ).format('YYYY-MM-DD') %>" >
+            </div>
+          </div>
+          <!--Update Date-->
+          <div class="form-group row">
+            <label for="string" class="col-sm-2 col-form-label">Update Date</label>
+            <div class="col-sm-6">
+                <input type="date" class="form-control" name="updatedate" value="<%= moment( data.updatedate ).format('YYYY-MM-DD') %>" >
+            </div>
+          </div>
+
+          <!--Closed Date-->
+          <div class="form-group row">
+            <label for="string" class="col-sm-2 col-form-label">Closed Date</label>
+            <div class="col-sm-6">
+                <input type="date" class="form-control" name="closeddate" value="<%= moment( data.closeddate ).format('YYYY-MM-DD') %>" >
+            </div>
+          </div>
+
+          <!--Parenttask-->
+          <div class="form-group row">
+            <label for="string" class="col-sm-2 col-form-label">Parent Task</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" name="parenttask" value="<%=  data.parenttask %>" required>
+            </div>
+          </div>
+
 
               <div class="form-group row">   
                   <div class="col-sm-10">    

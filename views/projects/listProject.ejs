@@ -107,9 +107,9 @@
             
               <% for(const item of data)  { %>
                 <tr>
-                  <%- option.projectid ? `<td><a href="/projects/overview/`+ item.projectid +`" class="btn btn-outline-secondary">`+item.projectid + `</a></td>` : `` %>
-                 <%- option.name ? `<td>`+item.name + `</td>` : `` %>
-                 <%- option.members ? `<td>`+item.members + `</td>` : `` %>
+                  <%- option.projectid ? `<td><a href="/projects/overview/${item.projectid}" class="btn btn-outline-secondary">${item.projectid}</a></td>` : `` %>
+                 <%- option.name ? `<td>${item.name}</td>` : `` %>
+                 <%- option.members ? `<td>${item.members}</td>` : `` %>
                   <td>
                     <a class="btn btn-success edit"  href="/projects/edit/<%=item.projectid%>"">Edit</a>                       
     <a class="btn btn-danger delete" onclick="return confirm('Are you sure you want to delete this item?');" href="/projects/delete/<%= item.projectid %>">Delete</a>    
