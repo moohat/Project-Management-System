@@ -103,7 +103,7 @@
                 <% if( option.idChecked == "true") { %> <th scope="col">ID</th> <%}%>
                 <% if( option.nameChecked == "true" ) { %><th scope="col">Nama</th><%}%>
                 <% if( option.positionChecked == "true" ) { %><th scope="col">Position</th><%}%>
-                <% if(isAdmin.isadmin) {%>
+                <% if(user.isadmin) {%>
                   <th scope="col">Action</th>
                   <%}%>
             </tr>  
@@ -114,7 +114,7 @@
                  <% if(option.idChecked){%> <td><%= item.id %></td><%}%>
                  <% if(option.nameChecked){%> <td><%= item.fullname %></td><%}%>
                  <% if(option.positionChecked){%> <td><%= item.role %></td><%}%>
-                 <% if(isAdmin.isadmin){%>
+                 <% if(user.isadmin){%>
 
                   <td>
                  <a class="btn btn-success edit" href="/projects/members/<%= item.projectid %>/<%=item.id%>/edit">Edit</a>                       
@@ -129,18 +129,20 @@
 
           <!--PAGINATION-->
          <br />
-         <nav aria-label="table">
-             <ul class="pagination">
-                 <li class="page-item <%= page == 1 ? 'disabled': ''; %>"><a class="page-link"
-                  href="/projects<%= url.replace(`page=${parseInt(page)}`, `page=${parseInt(page) - 1}`) %>">Previous</a></li>
-                 <% for (let i = 1; i <= pages; i++) { %>
-                 <li class="page-item <%= page == i ? 'active': ''; %>"><a class="page-link"  href="/projects<%= url.replace(`page=${page}`, `page=${i}`) %>">
-                         <%= i %></a></li>
-                 <% }; %>
-                 <li class="page-item <%= page == pages ? 'disabled': ''; %>"><a class="page-link"
-                  href="/projects<%= url.replace(`page=${parseInt(page)}`, `page=${parseInt(page) + 1}`) %>">Next</a></li>
-             </ul>
-         </nav>
+         <nav aria-label="Page navigation example" style="margin-top:1%">
+            <ul class="pagination" class="pagination justify-content-center">
+                <li class="page-item <%= page == 1 ? 'disabled' : ''%>"><a class="page-link"
+                        href="/projects<%= url.replace(`page=${parseInt(page)}`, `page=${parseInt(page) - 1}`) %>">Previous</a>
+                </li>
+                <% for(let i = 1; i <= pages; i++){ %>
+                <li class="page-item <%= page == i ? 'active' : '' %>"><a class="page-link"
+                        href="/projects<%= url.replace(`page=${page}`, `page=${i}`) %>"><%= i %></a></li>
+                <% } %>
+                <li class="page-item <%= page == pages ? 'disabled' : ''%>"><a class="page-link"
+                        href="/projects<%= url.replace(`page=${parseInt(page)}`, `page=${parseInt(page) + 1}`) %>">Next</a>
+                </li>
+            </ul>
+        </nav>
 
 
          

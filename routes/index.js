@@ -9,7 +9,7 @@ module.exports = function (pool){
   /* GET home page. */
   router.get('/', function(req, res, next) {
     res.render('login',{
-
+      user:req.session.user,
       info: req.flash('info')
     });
   });
@@ -28,7 +28,7 @@ module.exports = function (pool){
           if (data.rows[0].email == email && data.rows[0].password == password) {
             data.rows[0].password = null;
             req.session.user = data.rows[0];
-            console.log(req.session.user);
+            console.log("data session ",req.session.user);
             
             res.redirect("/projects");
           }
@@ -54,9 +54,11 @@ module.exports = function (pool){
   // // });
 
   // LOG OUT
-  router.get("/logout", helpers.isLoggedIn, (req, res, next) => {
-    req.session.destroy();
-    res.redirect("/");
+  router.get("/logout", (req, res, next) => {
+    req.session.destroy = () => {
+
+      res.redirect("/");
+    };
   });
 
 

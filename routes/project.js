@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const path = require('path');
 var moment = require('moment');
+var nav = 1;
 
 const helpers = require("../helpers/util")
 
@@ -172,9 +173,11 @@ module.exports = function (pool) {
                             // console.log(err, options.rows);
 
                             res.render('projects/listProject', {
+                              nav,
                                 data: projectData.rows,
                                 query: req.query,
                                 users: data.rows,
+                                user:req.session.user,
                                 page: page,
                                 pages: pages,
                                 url: url,
@@ -303,12 +306,13 @@ module.exports = function (pool) {
                 if (err) throw err;
                 console.log('suksess edit');
                 res.render('projects/editProject', {
+                  nav,
                     name: data.rows[0].name,
                     projectid: data.rows[0].projectid,
                     members: data.rows.map(item => item.userid),
                     users: user.rows,
                     path,
-                    isAdmin: req.session.user
+                    user:req.session.user,
                 })
 
             })
@@ -416,6 +420,8 @@ module.exports = function (pool) {
                 });
 
                 res.render("projects/overview/listOverview", {
+                  nav,
+
                     data: data.rows,
                     issues: issues.rows,
                     //todo: issue tracking
@@ -425,7 +431,7 @@ module.exports = function (pool) {
                     featureTotal,
                     supportOpen,
                     supportTotal,
-                    isadmin: req.session.user,
+                    user:req.session.user,
                     projectid: req.params.projectid,
 
                 });
@@ -461,10 +467,14 @@ module.exports = function (pool) {
                 // };
                 // console.log(sql2);
                 res.render("projects/overview/activity/listActivity", {
+                  nav,
+
                     data: data.rows,
                     issues: issues.rows,
                     moment,
                     projectid: req.params.projectid,
+                    user:req.session.user,
+
 
                 });
             });
@@ -518,7 +528,7 @@ module.exports = function (pool) {
     console.log(req.url)
     const url = (req.url == `/members/${req.params.projectid}`) ? `/members/${req.params.projectid}/?page=1` : req.url
     let page = req.query.page || 1;
-    let limit = 3;
+    let limit = 1;
     let offset = (page - 1) * limit;
 
     if (ckid && memberid) {
@@ -533,9 +543,9 @@ module.exports = function (pool) {
       temp.push(`members.role = '${position}'`)
     }
     let sql = `SELECT count(*) as total FROM members WHERE members.projectid = ${req.params.projectid}`;
-    // if (temp.length > 0) {
-    //   sql += ` WHERE ${temp.join(" AND ")}`
-    // }
+    if (temp.length > 0) {
+      sql += ` AND ${temp.join(" AND ")}`
+    }
     pool.query(sql, (err, count) => {
       const total = count.rows[0].total
       const pages = Math.ceil(total / limit)
@@ -554,6 +564,8 @@ module.exports = function (pool) {
       pool.query(sqlmember, (err, data) => {
         pool.query(sqloption, (err, option) => {
           res.render('projects/overview/members/listMember', {
+            nav,
+
             data: data.rows,
             projectid: req.params.projectid,
             page: page,
@@ -562,7 +574,7 @@ module.exports = function (pool) {
             fullname: data.fullname,
             option: option.rows[0].memberopt,
             pathside, path,
-            isAdmin: req.session.user,
+            user: req.session.user,
             query: req.query
           })
         })
@@ -653,13 +665,15 @@ module.exports = function (pool) {
     console.log(sql);
     pool.query(sql, (err, data) => {
       res.render('projects/overview/members/editMember', {
+        nav,
+
         projectid,
         id: req.params.id,
         data: data.rows[0],
         path,
         pathside,
         projectid: req.params.projectid,
-        isAdmin: req.session.user
+        user: req.session.user
       })
     })
     });
@@ -724,10 +738,7 @@ module.exports = function (pool) {
   //=========================================GET ROUTER ISSUES============================\\
   router.get('/issues/:projectid', helpers.isLoggedIn, (req, res) => {
     let path = "issues"
-    console.log("=================Router Get  Issues============");
-    console.log("==");
-    console.log("==");
-    console.log("==");
+   
 
 
     const { ckid, issueid, cksubject, subject, cktracker, tracker } = req.query;
@@ -736,7 +747,7 @@ module.exports = function (pool) {
     console.log(req.url)
     const url = (req.url == `/issues/${req.params.projectid}`) ? `/issues/${req.params.projectid}/?page=1` : req.url
     let page = req.query.page || 1;
-    let limit = 3;
+    let limit = 1;
     let offset = (page - 1) * limit
 
     if (ckid && issueid) {
@@ -752,9 +763,9 @@ module.exports = function (pool) {
     }
     let sql = `SELECT count(*) as total FROM issues WHERE projectid = ${req.params.projectid}`;
 
-    // if (temp.length > 0) {
-    //   sql += ` WHERE ${temp.join(" AND ")}`
-    // }
+    if (temp.length > 0) {
+      sql += ` AND ${temp.join(" AND ")}`
+    }
     console.log('this sql isse>> ', sql);
 
     console.log('this temp push', temp.push);
@@ -781,6 +792,8 @@ module.exports = function (pool) {
         if (err) { console.log('Not Found') }
         pool.query(sqloption, (err, option) => {
           res.render("projects/overview/issues/listIssues", {
+            nav,
+
             data: data.rows,
             projectid: req.params.projectid,
             page: page,
@@ -789,7 +802,7 @@ module.exports = function (pool) {
             fullname: data.fullname,
             options: option.rows[0].issueopt,
             pathside, path,
-            isAdmin: req.session.user,
+            user: req.session.user,
             query: req.query,
             moment
           })
@@ -850,11 +863,13 @@ module.exports = function (pool) {
     
         pool.query(sql, (err, data) => {
           res.render("projects/overview/issues/addIssues", {
+            nav,
+
             data: data.rows,
             projectid: req.params.projectid,
             path,
             pathside,
-            isAdmin: req.session.user
+            user: req.session.user
           });
         });
       });
@@ -922,11 +937,13 @@ module.exports = function (pool) {
                 }
                 console.log(data.rows[0]);
                 res.render("projects/overview/issues/editIssues", {
+                              nav,
+
                     data: data.rows[0],
                     data2: data.rows,
                     users: users.rows,
                     moment,
-                    isAdmin: req.session.user,
+                    user: req.session.user,
                     path,
 
 

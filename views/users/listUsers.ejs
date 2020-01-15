@@ -2,7 +2,7 @@
 <br />
 <br />
 <div class="container">
-  <h1>Users</h1>
+  <h1>Users </h1>
   
       <hr>
       <h2>Filters</h2>
@@ -11,7 +11,7 @@
         <!--       id        -->
         <div class="container col-sm-10">
             <div class="form-group row">         
-              <label class="col-sm-2 col-form-label"><input type="checkbox" for="checkid" name="checkid">ID</label>
+              <label class="col-sm-2 col-form-label"><input type="checkbox" for="ckid" name="ckid" <%= query.ckid ? ' checked': '' %>>ID</label>
               <div class="col-sm-6">
                 <input
                   type="text"
@@ -19,12 +19,13 @@
                   id="id"
                   placeholder="id"
                   name="id"
+                  value="<%= query.id %>"
                 />
               </div>
             </div>
             <!--       name        -->
             <div class="form-group row">
-              <label for="checkname" class="col-sm-2 col-form-label"><input type="checkbox" id="checkname" name="checkname">Full Name</label>
+              <label for="checkname" class="col-sm-2 col-form-label"><input type="checkbox" id="ckname" name="ckname"  <%= query.ckname ? ' checked': '' %>> Name</label>
               <div class="col-sm-6">
                 <input
                   type="text"
@@ -32,12 +33,14 @@
                   id="name"
                   placeholder="name"
                   name="name"
+                  value="<%= query.name %>"
+
                 />
               </div>
             </div>
             <!--       EMAIL        -->
             <div class="form-group row">
-              <label for="email" class="col-sm-2 col-form-label"><input type="checkbox" id="checkemail" name="checkemail">Email</label>
+              <label for="email" class="col-sm-2 col-form-label"><input type="checkbox" id="ckemail" name="ckemail" <%= query.ckemail ? ' checked': '' %>>Email</label>
               <div class="col-sm-6">
                 <input
                   type="text"
@@ -45,22 +48,49 @@
                   id="email"
                   placeholder="Email"
                   name="email"
+                  value="<%= query.email %>"
+
                 />
               </div>
             </div>
-             <!--       POSITION        -->
+             <!--       Type Job        -->
              <div class="form-group row">
-              <label for="position" class="col-sm-2 col-form-label"><input type="checkbox" id="position">Email</label>
-              <div class="col-sm-6">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="email"
-                  placeholder="Email"
-                  name="email"
-                />
+              <div class="col-sm-2">
+                  <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="ckjobtype" <%= query.ckjobtype ? ' checked': '' %>/>Type Job
+                  </div>
               </div>
+              <div class="col-sm-5">
+                
+                <div class="form-group">                    
+                  <select class="custom-select my-1 mr-sm-2" id="member" name="jobtype">
+                    <option selected disabled>Choose the Job Type</option>
+                    <option value="Full Time" <%= query.jobtype =='Full Time'? 'selected': '' %>>Full Time</option>
+                    <option value="Part Time" <%= query.jobtype =='Part Time'? 'selected': '' %>>Part Time</option>
+                </select>
+                  </div>
+                </div>
             </div>
+
+                <!--       Role        -->
+                <div class="form-group row">
+                  <div class="col-sm-2">
+                      <div class="form-check">
+                          <input class="form-check-input" type="checkbox" name="ckRole" <%= query.ckRole ? ' checked': '' %>/>Position
+                      </div>
+                  </div>
+                  <div class="col-sm-5">
+                    
+                    <div class="form-group">                    
+                      <select class="custom-select my-1 mr-sm-2" id="member" name="role">
+                        <option selected disabled>Choose the Position</option>
+                        <option value="Manager" <%= query.role =='Manager'? 'selected': '' %>>Manager</option>
+                        <option value="Software Developer" <%= query.role =='Software Developer'? 'selected': '' %>>Software Developer</option>
+                        <option value="Quality Assurance" <%= query.role =='Quality Assurance'? 'selected': '' %>>Quality Assurance</option>
+                    </select>
+                      </div>
+                    </div>
+                </div>
     
             <div class="form-group row">
                 <div class="col-sm-10">
@@ -71,26 +101,26 @@
         </div>
       </form>
       <h2><i class="fas fa-columns"></i> Options</h2>
-      <form action="" method="POST">
+      <form action="/users/option" method="POST">
           <div class="form-group row">
               <div class="col-sm-2">Column</div>
               <div class="col-sm-3">
                   <div class="form-check">
-                      <input class="form-check-input" type="checkbox" name="oprojectid" value="true"/>
-                      <label class="form-check-label" for="projectid">
+                      <input class="form-check-input" type="checkbox" name="idChecked" value="true" <%= option.idChecked ? 'checked': ''%>/>
+                      <label class="form-check-label" for="idChecked">
                           ID
                       </label>
                   </div>
                   <div class="form-check">
-                      <input class="form-check-input" type="checkbox" name="oname" value="true"/>
-                      <label class="form-check-label" for="name">
+                      <input class="form-check-input" type="checkbox" name="nameChecked" value="true" <%= option.nameChecked ? 'checked': ''%>/>
+                      <label class="form-check-label" for="nameChecked">
                           Name
                       </label>
                   </div>
                   <div class="form-check">
-                      <input class="form-check-input" type="checkbox" name="omember" value="true"/>
-                      <label class="form-check-label" for="member">
-                          Members
+                      <input class="form-check-input" type="checkbox" name="positionChecked" value="true" <%= option.positionChecked ? 'checked': ''%> />
+                      <label class="form-check-label" for="positionChecked">
+                          Position
                       </label>
                   </div>
               </div>
@@ -102,10 +132,11 @@
       <table class="table table-striped">
         <thead>
           <tr>
-            <th scope="col">#</th>
+            <%- option.idChecked ? `<th>ID</th>` : `` %>
+            
             <th scope="col">Email</th>
-            <th scope="col">Name</th>
-            <th scope="col">Position</th>
+            <%- option.nameChecked ? `<th>Name</th>` : `` %>
+            <%- option.positionChecked ? `<th>Position</th>` : `` %>
             <th scope="col">Type Job</th>
             <th scope="col">Action</th>
           </tr>
@@ -114,10 +145,10 @@
         
           <% for(const item of data)  { %>
             <tr>
-              <td> <%= item.userid %></td>
+              <%- option.idChecked ? `<td>${item.userid}</td>` : `` %>
               <td> <%= item.email %></td>
-              <td> <%= item.firstname %></td>
-              <td> <%= item.position %></td>
+              <%- option.nameChecked ? `<td>${item.firstname}</td>` : `` %>
+              <%- option.positionChecked ? `<td>${item.position}</td>` : `` %>
               <td> <%= item.jobtype %></td>
 
               <td>
@@ -133,25 +164,29 @@
         </tbody>
       </table>
 
-        <!--PAGINATION-->
-        <br />
-        <nav aria-label="table">
-            <ul class="pagination">
-                <li class="page-item <%= page == 1 ? 'disabled': ''; %>"><a class="page-link"
-                        href="/?page=<%= parseInt(page) - 1%>">Previous</a></li>
-                <% for (let i = 1; i <= pages; i++) { %>
-                <li class="page-item <%= page == i ? 'active': ''; %>"><a class="page-link"  href="/users<%= url.replace(`page=${page}`, `page=${i}`) %>">
-                        <%= i %></a></li>
-                <% }; %>
-                <li class="page-item <%= page == pages ? 'disabled': ''; %>"><a class="page-link"
-                        href="/users?page=<%= parseInt(page) + 1%>">Next</a></li>
-            </ul>
-        </nav>
+      
+
+          <!--PAGINATION-->
+          <br />
+          <nav aria-label="Page navigation example" style="margin-top:1%">
+             <ul class="pagination" class="pagination justify-content-center">
+                 <li class="page-item <%= page == 1 ? 'disabled' : ''%>"><a class="page-link"
+                         href="/users<%= url.replace(`page=${parseInt(page)}`, `page=${parseInt(page) - 1}`) %>">Previous</a>
+                 </li>
+                 <% for(let i = 1; i <= pages; i++){ %>
+                 <li class="page-item <%= page == i ? 'active' : '' %>"><a class="page-link"
+                         href="/users<%= url.replace(`page=${page}`, `page=${i}`) %>"><%= i %></a></li>
+                 <% } %>
+                 <li class="page-item <%= page == pages ? 'disabled' : ''%>"><a class="page-link"
+                         href="/users<%= url.replace(`page=${parseInt(page)}`, `page=${parseInt(page) + 1}`) %>">Next</a>
+                 </li>
+             </ul>
+         </nav>
 
 
 
         <div class="form-group row">
-          <a href="users/add"
+          <a href="/users/add"
             ><button type="button" class="btn btn-primary">add</button></a
           >
         </div>

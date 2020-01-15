@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const helpers = require("../helpers/util")
-
+let nav = 2;
 
 module.exports = function (pool){
 /* GET home page. */
@@ -13,8 +13,9 @@ router.get('/', function(req, res, next) {
   pool.query(sql, (err, profile) =>{
 
     res.render('profile/viewProfile',{
+      nav,
         profile: profile.rows[0],
-         user: req.session.user
+         user: req.session.user,
     });
   });  
   });

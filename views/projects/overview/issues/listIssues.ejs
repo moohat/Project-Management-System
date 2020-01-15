@@ -204,7 +204,9 @@
           <% } %>
   
          
-          <th>Action</th>
+          <% if(user.isadmin) {%>
+            <th scope="col">Action</th>
+            <%}%>
         </tr>
       </thead>
       <tbody>
@@ -224,10 +226,12 @@
           <td><%= item.done %></td>
           <td><a href="/images/<%= item.files %>"><%= item.files == 'null' ? 'disabled' : '' %> <i class="fa fa-download fa-2x"></i> </button> </a> </td>
           <td><%= item.author %></td>
+          <% if(user.isadmin){%>
           <td>
              <a href="/projects/issues/<%= item.projectid %>/<%=item.issueid%>/edit" class="btn btn-success"><i class="fa fa-edit"></i> Edit</a>
             <a onclick="return confirm('Are you sure you want to delete this item?');" href="/projects/issues/<%= item.projectid %>/<%= item.issueid %>/delete" class="btn btn-danger"><i class="fa fa-trash"></i> Delete</a>
           </td>
+          <% } %>
         </tr>
         <% })%>
         <% } else{ %>
