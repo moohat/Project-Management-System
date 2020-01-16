@@ -9,6 +9,16 @@ const fileUpload = require('express-fileupload');
 
 //Model setup
 const { Pool } = require("pg");
+
+
+//todo: local host
+// const pool = new Pool({
+//   user: "postgres",
+//   host: "localhost",
+//   database: "dbpms",
+//   password: "admin",
+//   port: 5432
+// });
 const pool = new Pool({
   user: "gfghipmqiznxba",
   host: "ec2-174-129-255-91.compute-1.amazonaws.com",
