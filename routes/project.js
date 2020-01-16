@@ -183,7 +183,7 @@ module.exports = function (pool) {
                                 url: url,
                                 path, pathside,
                                 option: options.rows[0].projectopt,
-                                isAdmin: req.session.user
+                                user: req.session.user
                             })
                         })
                     })
@@ -224,7 +224,7 @@ module.exports = function (pool) {
         pool.query(sql, (err, row) => {
             console.log(sql);
             if (err) throw err;
-            res.render('projects/addProject', { data: row.rows, isAdmin: req.session.user, path, dataNull: req.flash('dataNull') })
+            res.render('projects/addProject', { nav, data: row.rows, user: req.session.user, path, dataNull: req.flash('dataNull') })
         });
     });
 
@@ -364,6 +364,7 @@ module.exports = function (pool) {
 
         let sqlDeleteProject = `DELETE FROM members WHERE projectid = ${projectid};
         DELETE FROM issues WHERE projectid = ${projectid};
+        DELETE FROM activity WHERE projectid = ${projectid};
         DELETE FROM projects WHERE projectid = ${projectid}`;
         console.log(sqlDeleteProject);
 
@@ -528,7 +529,7 @@ module.exports = function (pool) {
     console.log(req.url)
     const url = (req.url == `/members/${req.params.projectid}`) ? `/members/${req.params.projectid}/?page=1` : req.url
     let page = req.query.page || 1;
-    let limit = 1;
+    let limit = 3;
     let offset = (page - 1) * limit;
 
     if (ckid && memberid) {
@@ -610,8 +611,11 @@ module.exports = function (pool) {
         pool.query(sql, (err, data) => {
             if (data.rows.length > 0) {
                 res.render("projects/overview/members/addMember", {
+                  nav,
                     data: data.rows,
                     projectid: req.params.projectid,
+                    user: req.session.user,
+
                 });
             } else {
                 res.send(err);
@@ -747,7 +751,7 @@ module.exports = function (pool) {
     console.log(req.url)
     const url = (req.url == `/issues/${req.params.projectid}`) ? `/issues/${req.params.projectid}/?page=1` : req.url
     let page = req.query.page || 1;
-    let limit = 1;
+    let limit = 3;
     let offset = (page - 1) * limit
 
     if (ckid && issueid) {
@@ -879,14 +883,18 @@ module.exports = function (pool) {
 
     router.post("/issues/:projectid/add",(req, res, next) => {
         console.log(req.files.doc);
-        let sqlActivityIssue = `INSERT INTO activity(time, title, description,projectid, author) VALUES(NOW(), '${req.body.subject}', 'New Issue Created : Tracker : [${req.body.tracker}] Subject : ${req.body.subject} - (${req.body.status}) - Done: ${req.body.done}', ${req.params.projectid},(SELECT author FROM projects WHERE projectid = ${req.params.projectid}))`;
+        // let sqlActivityIssue = `INSERT INTO activity(time, title, description,projectid, author) VALUES(NOW(), '${req.body.subject}', 'New Issue Created : Tracker : [${req.body.tracker}] Subject : ${req.body.subject} - (${req.body.status}) - Done: ${req.body.done}', ${req.params.projectid},(SELECT author FROM projects WHERE projectid = ${req.params.projectid}))`;
+
+        let sqlActivityIssue = `INSERT INTO activity(time, title, description,projectid, author) VALUES(NOW(), '${req.body.subject}', 'New Issue Created : Tracker : [${req.body.tracker}] Subject : ${req.body.subject} - (${req.body.status}) - Done: ${req.body.done}', ${req.params.projectid},${req.body.userid})`;
+        
         console.log(sqlActivityIssue);
+        req.session.user
 
 
         pool.query(sqlActivityIssue, err => {
             if (!req.files || Object.keys(req.files).length === 0) {
                 let sqlAddIssue = `INSERT INTO issues(projectid,tracker,subject,description,status,priority,assignee,author,startdate,duedate,estimatedtime,done,files,spenttime,targetversion,createddate)
-            VALUES(${req.params.projectid},'${req.body.tracker}','${req.body.subject}','${req.body.description}','${req.body.status}','${req.body.priority}',${req.body.assignee},(SELECT author FROM projects WHERE projectid = ${req.params.projectid}),'${req.body.startdate}','${req.body.duedate}','${req.body.estimatedtime}',${req.body.done},null,'0','${req.body.targetversion}',NOW())`;
+            VALUES(${req.params.projectid},'${req.body.tracker}','${req.body.subject}','${req.body.description}','${req.body.status}','${req.body.priority}',${req.body.assignee},${req.body.userid},'${req.body.startdate}','${req.body.duedate}','${req.body.estimatedtime}',${req.body.done},null,'0','${req.body.targetversion}',NOW())`;
                 if (err) {
                     res.send(err)
                 }
@@ -899,7 +907,7 @@ module.exports = function (pool) {
                 nameFile = Date.now() + "_" + nameFile;
 
                 let sqlAddIssue = `INSERT INTO issues(projectid,tracker,subject,description,status,priority,assignee,author,startdate,duedate,estimatedtime,done,files,spenttime,createddate,updatedate)
-                    VALUES(${req.params.projectid},'${req.body.tracker}','${req.body.subject}','${req.body.description}','${req.body.status}','${req.body.priority}',${req.body.assignee},(SELECT author FROM projects WHERE projectid = ${req.params.projectid}),'${req.body.startdate}','${req.body.duedate}','${req.body.estimatedtime}',${req.body.done},'${nameFile}','0',NOW(),NOW())`;
+                    VALUES(${req.params.projectid},'${req.body.tracker}','${req.body.subject}','${req.body.description}','${req.body.status}','${req.body.priority}',${req.body.assignee},${req.body.userid},'${req.body.startdate}','${req.body.duedate}','${req.body.estimatedtime}',${req.body.done},'${nameFile}','0',NOW(),NOW())`;
 
                 pool.query(sqlAddIssue, err => {
                     console.log("with file", sqlAddIssue);

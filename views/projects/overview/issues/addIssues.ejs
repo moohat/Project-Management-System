@@ -8,8 +8,9 @@
       <br />
       <!-- <form action="/projects/issues/<%=/* data[0].projectid */%>/add" method="POST" encType="multipart/form-data">      -->
         <form action="" method="POST" encType="multipart/form-data">     
-           
-           
+          <%= user.userid %>
+<input type="hidden" class="form-control" id="userid" name="userid" value= "<%= user.userid %>"  >
+
           <!--       Tracker        -->
           <div class="form-group row">
               <label for="string" class="col-sm-2 col-form-label">Tracker</label>
