@@ -824,11 +824,66 @@ module.exports = function (pool) {
         let author = req.session.user.userid;
         console.log('this author Edit issues>>', author);
         const { projectid, issueid } = req.params;
+        
+        const { tracker, subject, description, status, priority, assignee, startdate, duedate, estimatedtime, done, spenttime, targetversion, parenttask, createddate } = req.body;
+
+        if (!req.files || Object.keys(req.files).length === 0) {
+          if (status == 'closed') {
+            sql = `UPDATE issues SET tracker ='${tracker}',
+                                    subject = '${subject}',
+                                    description ='${description}',
+                                    status = '${status}',
+                                    priority = '${priority}',
+                                    startdate ='${startdate}',
+                                    duedate = '${duedate}',
+                                    estimatedtime =${estimatedtime},
+                                    done = ${done},
+                                    spenttime =${spenttime},
+                                    targetversion =${targetversion},
+                                    parenttask = ${parenttask},
+                                    author = ${author},
+                                    updatedate =  now(),
+                                    closeddate = now(),
+                                    assignee = ${assignee} WHERE issueid =${req.params.issueid};
+            `
+          } else {
+            sql = `UPDATE issues SET tracker ='${tracker}',
+                                    subject = '${subject}',
+                                    description ='${description}',
+                                    status = '${status}',
+                                    priority = '${priority}',
+                                    startdate ='${startdate}',
+                                    duedate = '${duedate}',
+                                    estimatedtime =${estimatedtime},
+                                    done = ${done},
+                                    spenttime =${spenttime},
+                                    targetversion =${targetversion},
+                                    parenttask = ${parenttask},
+                                    author = ${author},
+                                    updatedate =  now(),
+                                    assignee = ${assignee} WHERE issueid = ${req.params.issueid}`;
+          }
+          console.log('this sql edit issues >>', sql);
+          let title = `${subject}#${req.params.issueid} (${status})`
+      
+          pool.query(sql, (err, data) => {
+      
+            let activity = `INSERT INTO activity (title, description, author,time) VALUES('${title}', '${description}',${req.session.user.userid}, now())`;
+      
+            console.log('this sql activity>>', activity);
+      
+            pool.query(activity, (err) => {
+              res.redirect(`/projects/issues/${projectid}`)
+
+            });
+        });
+      } else{
+
+
         let doc = req.files.doc;
         let nameFile = doc.name.replace(/ /g, "_");
         let filename = Date.now() + "_" + nameFile;
     
-        const { tracker, subject, description, status, priority, assignee, startdate, duedate, estimatedtime, done, spenttime, targetversion, parenttask, createddate } = req.body;
     
         // if (req.files) {
         //     let doc = req.files.doc;
@@ -900,6 +955,8 @@ module.exports = function (pool) {
     
           })
         })
+        }
+          
       })
 
   
