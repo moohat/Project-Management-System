@@ -10,10 +10,10 @@ const fileUpload = require('express-fileupload');
 //Model setup
 const { Pool } = require("pg");
 const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "dbpms",
-  password: "admin",
+  user: "gfghipmqiznxba",
+  host: "ec2-174-129-255-91.compute-1.amazonaws.com",
+  database: "dadpjq4k75qfss",
+  password: "2b55f9187f49449c919a2d4c8f878896a727977bd4fe579d809eadfc7cc1b2ed",
   port: 5432
 });
 console.log("Successful connection to the database");
